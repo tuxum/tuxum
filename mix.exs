@@ -15,6 +15,8 @@ defmodule Tuxum.MixProject do
   #
   # Run "mix help deps" for examples and options.
   defp deps do
-    []
+    [
+      {:mix_test_watch, "~> 0.5", only: :dev, runtime: false}
+    ]
   end
 end
