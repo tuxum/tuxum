@@ -23,7 +23,8 @@ defmodule Tuxum.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate"]
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end
