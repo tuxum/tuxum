@@ -5,7 +5,8 @@ defmodule Tuxum.MixProject do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -17,6 +18,12 @@ defmodule Tuxum.MixProject do
   defp deps do
     [
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate"]
     ]
   end
 end
