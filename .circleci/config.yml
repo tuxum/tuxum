@@ -3,6 +3,11 @@ jobs:
   build:
     docker:
       - image: circleci/elixir:1.6
+      - image: circleci/postgres:10.2-alpine
+        environment:
+          - POSTGRES_USER: postgres
+          - POSTGRES_PASSWORD: postgres
+          - POSTGRES_DB: tuxum_test
     working_directory: ~/repo
     steps:
       - checkout
