@@ -1,7 +1,7 @@
 use Mix.Config
 
 config :db, DB.Repo,
-  database: {:system, "DB_MASTER_DATABASE", "tuxum"},
-  username: {:system, "DB_MASTER_USERNAME", "postgres"},
-  password: {:system, "DB_MASTER_PASSWORD", "postgres"},
-  hostname: {:system, "DB_MASTER_HOSTNAME", "localhost"}
+  database: "${DB_MASTER_DATABASE}",
+  username: "${DB_MASTER_USERNAME}",
+  password: "${DB_MASTER_PASSWORD}",
+  hostname: "${DB_MASTER_HOSTNAME}"
