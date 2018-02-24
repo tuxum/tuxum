@@ -3,8 +3,22 @@ defmodule Core.Identities do
   Module provides functionality around user identities.
   """
 
+  import Ecto.Query, only: [from: 2]
+
   alias Ecto.Multi
   alias Core.Identities.{User, PasswordIdentity}
+
+  def find_user(%{email: email}) do
+    repo = DB.replica()
+
+    from(u in User, where: u.email == ^email) |> repo.one
+  end
+
+  def find_user(%{id: id}) do
+    repo = DB.replica()
+
+    from(u in User, where: u.id == ^id) |> repo.one
+  end
 
   def insert_user(%{name: name, email: email, password: password}) do
     repo = DB.primary()

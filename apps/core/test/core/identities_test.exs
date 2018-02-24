@@ -3,6 +3,23 @@ defmodule Core.IdentitiesTest do
 
   alias Core.Identities
 
+  describe "find_user/1" do
+    @params %{
+      name: "John Doe",
+      email: "john@doe.com",
+      password: "p@ssw0rd"
+    }
+
+    setup do
+      Identities.insert_user(@params)
+    end
+
+    test "returns a user by email", %{user: user} do
+      assert Identities.find_user(%{email: user.email})
+      assert Identities.find_user(%{id: user.id})
+    end
+  end
+
   describe "insert_user/1" do
     @params %{
       name: "John Doe",
