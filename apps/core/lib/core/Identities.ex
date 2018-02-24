@@ -6,7 +6,7 @@ defmodule Core.Identities do
   import Ecto.Query, only: [from: 2]
 
   alias Ecto.Multi
-  alias Core.Identities.{User, PasswordIdentity}
+  alias Core.Identities.{User, PasswordIdentity, Token}
 
   def find_user(%{email: email}) do
     repo = DB.replica()
@@ -44,5 +44,16 @@ defmodule Core.Identities do
       _ ->
         false
     end
+  end
+
+  def user_from_token(token) do
+    case Token.to_user(token) do
+      nil -> :error
+      user -> {:ok, user}
+    end
+  end
+
+  def token_from_user(user) do
+    {:ok, Token.from_user(user)}
   end
 end

@@ -33,6 +33,7 @@ defmodule Core.MixProject do
       {:ecto, "~> 2.2"},
       {:comeonin, "~> 4.0"},
       {:pbkdf2_elixir, "~> 0.12"},
+      {:joken, "~> 1.5"},
 
       {:db, in_umbrella: true}
     ]

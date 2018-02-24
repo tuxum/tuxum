@@ -94,4 +94,23 @@ defmodule Core.IdentitiesTest do
       refute Identities.correct_password?(user, @params.password <> "!!")
     end
   end
+
+  describe "user_from_token/1 and token_from_user/1" do
+    @params %{
+      name: "John Doe",
+      email: "john@doe.com",
+      password: "s3cr3tp@ssw0rd"
+    }
+
+    setup do
+      Identities.insert_user(@params)
+    end
+
+    test "can inverse transform user and token", %{user: user} do
+      {:ok, token} = Identities.token_from_user(user)
+      {:ok, returned_user} = Identities.user_from_token(token)
+
+      assert returned_user.name == user.name
+    end
+  end
 end
