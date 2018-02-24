@@ -5,7 +5,9 @@ defmodule AuthWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", AuthWeb do
+  scope "/", AuthWeb do
     pipe_through :api
+
+    resources "/tokens", TokenController, only: [:create]
   end
 end

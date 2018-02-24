@@ -35,6 +35,15 @@ defmodule Core.Identities do
     |> repo.transaction
   end
 
+  def authorize(email, password) do
+    with user when user != nil <- find_user(%{email: email}),
+         true <- correct_password?(user, password) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
   def correct_password?(user, password) do
     repo = DB.replica()
 
