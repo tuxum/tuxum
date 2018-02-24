@@ -7,7 +7,7 @@ defmodule Core.IdentitiesTest do
     @params %{
       name: "John Doe",
       email: "john@doe.com",
-      password: "p@ssw0rd"
+      password: "s3cr3tp@ssw0rd"
     }
 
     setup do
@@ -24,7 +24,7 @@ defmodule Core.IdentitiesTest do
     @params %{
       name: "John Doe",
       email: "john@doe.com",
-      password: "p@ssw0rd"
+      password: "s3cr3tp@ssw0rd"
     }
 
     test "inserts a user and the identity" do

@@ -16,6 +16,7 @@ defmodule Core.Identities.PasswordIdentity do
   def changeset(password_identity, attrs \\ %{}) do
     password_identity
     |> cast(attrs, ~w[digest password]a)
+    |> validate_length(:password, min: 10)
     |> hash_password()
     |> validate_required(~w[digest]a)
   end
