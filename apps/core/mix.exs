@@ -31,6 +31,8 @@ defmodule Core.MixProject do
   defp deps do
     [
       {:ecto, "~> 2.2"},
+      {:comeonin, "~> 4.0"},
+      {:pbkdf2_elixir, "~> 0.12"},
 
       {:db, in_umbrella: true}
     ]
