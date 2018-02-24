@@ -4,6 +4,8 @@ defmodule APIWeb.Schema do
   query do
     @desc "First query"
     field :user, :user do
+      middleware APIWeb.AuthMiddleware
+
       resolve fn _args, resolution ->
         %{current_user: current_user} = resolution.context
 
