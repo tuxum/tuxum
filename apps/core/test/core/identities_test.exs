@@ -64,6 +64,12 @@ defmodule Core.IdentitiesTest do
       end)
     end
 
+    test "ensure email is unique" do
+      assert {:ok, _} = Identities.insert_user(@params)
+      assert {:error, :user, changeset, _} = Identities.insert_user(@params)
+      assert %{errors: [email: _]} = changeset
+    end
+
     test "requires a password" do
       params = %{@params | password: ""}
 

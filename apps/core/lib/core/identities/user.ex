@@ -21,6 +21,7 @@ defmodule Core.Identities.User do
     |> downcase_email()
     |> validate_required(~w[name email]a)
     |> validate_format(:email, @email_regex)
+    |> unique_constraint(:email, name: :users_email_index)
   end
 
   defp downcase_email(changeset) do
