@@ -1,0 +1,29 @@
+defmodule Core.Identities.User do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  alias Core.Identities.PasswordIdentity
+
+  schema "users" do
+    field :name, :string
+    field :email, :string
+
+    has_one :password_identity, PasswordIdentity
+
+    timestamps()
+  end
+
+  @email_regex ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/
+
+  def changeset(user, attrs \\ %{}) do
+    user
+    |> cast(attrs, ~w[name email]a)
+    |> downcase_email()
+    |> validate_required(~w[name email]a)
+    |> validate_format(:email, @email_regex)
+  end
+
+  defp downcase_email(changeset) do
+    update_change(changeset, :email, &String.downcase/1)
+  end
+end
