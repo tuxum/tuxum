@@ -4,7 +4,11 @@ defmodule APIWeb.Schema do
   query do
     @desc "First query"
     field :user, :user do
-      resolve fn _, _, _ -> {:ok, %{name: "Bob"}} end
+      resolve fn _args, resolution ->
+        %{current_user: current_user} = resolution.context
+
+        {:ok, current_user}
+      end
     end
   end
 
