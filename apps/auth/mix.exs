@@ -41,7 +41,9 @@ defmodule Auth.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
 
-      {:core, in_umbrella: true}
+      {:core, in_umbrella: true},
+
+      {:mox, "~> 0.3", only: :test}
     ]
   end
 end

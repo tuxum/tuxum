@@ -9,6 +9,8 @@ use Mix.Config
 config :auth,
   namespace: Auth
 
+config :auth, :identities_module, Core.Identities
+
 # Configures the endpoint
 config :auth, AuthWeb.Endpoint,
   url: [host: "localhost"],

@@ -8,6 +8,15 @@ defmodule Core.Identities do
   alias Ecto.Multi
   alias Core.Identities.{User, PasswordIdentity, Token}
 
+  @callback find_user(map()) :: %User{}
+  @callback insert_user(map()) ::
+    {:ok, %{user: %User{}, password_identity: %PasswordIdentity{}}} |
+    {:error, atom(), Ecto.Changeset.t(), map()}
+  @callback authorize(String.t(), String.t()) :: %User{} | nil
+  @callback correct_password?(%User{}, String.t()) :: boolean()
+  @callback user_from_token(String.t()) :: {:ok, %User{}} | :error
+  @callback token_from_user(%User{}) :: {:ok, String.t()}
+
   def find_user(%{email: email}) do
     repo = DB.replica()
 
