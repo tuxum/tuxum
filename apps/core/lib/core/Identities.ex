@@ -34,4 +34,15 @@ defmodule Core.Identities do
     end)
     |> repo.transaction
   end
+
+  def correct_password?(user, password) do
+    repo = DB.replica()
+
+    case repo.preload(user, :password_identity) do
+      %User{password_identity: identity = %PasswordIdentity{}} ->
+        Comeonin.Pbkdf2.checkpw(password, identity.digest)
+      _ ->
+        false
+    end
+  end
 end

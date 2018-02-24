@@ -74,4 +74,24 @@ defmodule Core.IdentitiesTest do
       assert {:error, :password_identity, _, _} = Identities.insert_user(params)
     end
   end
+
+  describe "correct_password?/2" do
+    @params %{
+      name: "John Doe",
+      email: "john@doe.com",
+      password: "s3cr3tp@ssw0rd"
+    }
+
+    setup do
+      Identities.insert_user(@params)
+    end
+
+    test "returns true when user/password is correct", %{user: user} do
+      assert Identities.correct_password?(user, @params.password)
+    end
+
+    test "returns false when user/password is not correct", %{user: user} do
+      refute Identities.correct_password?(user, @params.password <> "!!")
+    end
+  end
 end
