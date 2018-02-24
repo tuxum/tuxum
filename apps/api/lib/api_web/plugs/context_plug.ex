@@ -7,8 +7,10 @@ defmodule APIWeb.ContextPlug do
     defstruct [current_user: nil]
   end
 
+  @impl Plug
   def init(opts), do: opts
 
+  @impl Plug
   def call(conn, _opts) do
     context = build_context(conn)
     put_private(conn, :absinthe, %{context: context})

@@ -1,6 +1,7 @@
 defmodule APIWeb.AuthMiddleware do
   @behaviour Absinthe.Middleware
 
+  @impl Absinthe.Middleware
   def call(resolution, _config) do
     case resolution.context do
       %{current_user: nil} ->
