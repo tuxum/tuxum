@@ -3,16 +3,18 @@ defmodule Core.IdentitiesTest do
 
   alias Core.Identities
 
-  describe "find_user/1" do
-    @params %{
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "s3cr3tp@ssw0rd"
-    }
+  @params %{
+    name: "John Doe",
+    email: "john@doe.com",
+    password: "s3cr3tp@ssw0rd"
+  }
 
-    setup do
-      Identities.insert_user(@params)
-    end
+  def insert_user(_) do
+    Identities.insert_user(@params)
+  end
+
+  describe "find_user/1" do
+    setup [:insert_user]
 
     test "returns a user by email", %{user: user} do
       assert Identities.find_user(%{email: user.email})
@@ -21,12 +23,6 @@ defmodule Core.IdentitiesTest do
   end
 
   describe "insert_user/1" do
-    @params %{
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "s3cr3tp@ssw0rd"
-    }
-
     test "inserts a user and the identity" do
       {:ok, %{user: user, password_identity: _}} = Identities.insert_user(@params)
 
@@ -76,15 +72,7 @@ defmodule Core.IdentitiesTest do
   end
 
   describe "correct_password?/2" do
-    @params %{
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "s3cr3tp@ssw0rd"
-    }
-
-    setup do
-      Identities.insert_user(@params)
-    end
+    setup [:insert_user]
 
     test "returns true when user/password is correct", %{user: user} do
       assert Identities.correct_password?(user, @params.password)
@@ -96,15 +84,7 @@ defmodule Core.IdentitiesTest do
   end
 
   describe "user_from_token/1 and token_from_user/1" do
-    @params %{
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "s3cr3tp@ssw0rd"
-    }
-
-    setup do
-      Identities.insert_user(@params)
-    end
+    setup [:insert_user]
 
     test "can inverse transform user and token", %{user: user} do
       {:ok, token} = Identities.token_from_user(user)
