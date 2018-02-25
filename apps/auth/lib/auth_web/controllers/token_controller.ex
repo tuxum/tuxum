@@ -6,7 +6,7 @@ defmodule AuthWeb.TokenController do
   def create(conn, %{"email" => email, "password" => password}) do
     identities_module = Application.get_env(:auth, :identities_module)
 
-    with user when user != nil <- identities_module.authorize(email, password),
+    with user when user != nil <- identities_module.authenticate(email, password),
          {:ok, token} <- identities_module.token_from_user(user) do
       conn
       |> put_status(:created)

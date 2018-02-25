@@ -11,7 +11,7 @@ defmodule AuthWeb.TokenControllerTest do
   describe "create action" do
     test "renders token when data are valid", %{conn: conn} do
       MockIdentities
-      |> Mox.expect(:authorize, fn "john@doe.com", "p@ssw0rd" -> %{id: 1} end)
+      |> Mox.expect(:authenticate, fn "john@doe.com", "p@ssw0rd" -> %{id: 1} end)
       |> Mox.expect(:token_from_user, fn _ -> {:ok, "dummy.token"} end)
 
       json = conn
@@ -23,7 +23,7 @@ defmodule AuthWeb.TokenControllerTest do
 
     test "renders error when given params are invalid", %{conn: conn} do
       MockIdentities
-      |> Mox.expect(:authorize, fn _, _ -> nil end)
+      |> Mox.expect(:authenticate, fn _, _ -> nil end)
 
       json = conn
         |> post(token_path(conn, :create), %{email: "john@doe.com", password: "p@ssw0rd"})

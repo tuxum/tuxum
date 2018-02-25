@@ -12,7 +12,7 @@ defmodule Core.Identities do
   @callback insert_user(map()) ::
     {:ok, %{user: %User{}, password_identity: %PasswordIdentity{}}} |
     {:error, atom(), Ecto.Changeset.t(), map()}
-  @callback authorize(String.t(), String.t()) :: %User{} | nil
+  @callback authenticate(String.t(), String.t()) :: %User{} | nil
   @callback correct_password?(%User{}, String.t()) :: boolean()
   @callback user_from_token(String.t()) :: {:ok, %User{}} | :error
   @callback token_from_user(%User{}) :: {:ok, String.t()}
@@ -44,7 +44,7 @@ defmodule Core.Identities do
     |> repo.transaction
   end
 
-  def authorize(email, password) do
+  def authenticate(email, password) do
     with user when user != nil <- find_user(%{email: email}),
          true <- correct_password?(user, password) do
       user
