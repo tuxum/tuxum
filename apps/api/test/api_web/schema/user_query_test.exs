@@ -17,20 +17,15 @@ defmodule APIWeb.Schema.UserQueryTest do
     end
 
     test "get user information", %{conn: conn, user: %{name: name}} do
-      json = conn
-        |> post("/graphql", %{query: "query { user { name } }"})
-        |> json_response(200)
-        |> Map.get("data")
+      data = graphql_data(conn, "query { user { name } }")
 
-      assert %{"user" => %{"name" => ^name}} = json
+      assert %{"user" => %{"name" => ^name}} = data
     end
 
     test "returns error when token is missing", %{conn: conn} do
       [error | _] = conn
         |> delete_req_header("authorization")
-        |> post("/graphql", %{query: "query { user { name } }"})
-        |> json_response(200)
-        |> Map.get("errors")
+        |> graphql_errors("query { user { name } }")
 
       assert %{"message" => "unauthorized"} = error
     end

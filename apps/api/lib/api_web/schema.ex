@@ -14,6 +14,13 @@ defmodule APIWeb.Schema do
     end
 
     mutation do
+      field :authenticate, :auth_token do
+        arg :email, non_null(:string)
+        arg :password, non_null(:string)
+
+        resolve &APIWeb.UserResolver.authenticate/2
+      end
+
       field :create_user, :user do
         arg :name, non_null(:string)
         arg :email, non_null(:string)
@@ -26,5 +33,9 @@ defmodule APIWeb.Schema do
 
   object :user do
     field :name, :string
+  end
+
+  object :auth_token do
+    field :token, :string
   end
 end
