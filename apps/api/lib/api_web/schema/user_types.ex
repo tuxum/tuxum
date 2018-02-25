@@ -33,6 +33,9 @@ defmodule APIWeb.Schema.UserTypes do
   object :user do
     field :name, non_null(:string)
     field :email, non_null(:string)
+    field :shop, :shop do
+      resolve &APIWeb.ShopResolver.find_shop/3
+    end
   end
 
   object :auth_token do
