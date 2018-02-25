@@ -10,7 +10,7 @@ defmodule Core.Identities.User do
     field :email, :string
 
     has_one :password_identity, PasswordIdentity
-    has_many :shops, Shop
+    has_one :shop, Shop
 
     timestamps()
   end

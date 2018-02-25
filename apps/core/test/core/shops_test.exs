@@ -19,11 +19,15 @@ defmodule Core.ShopsTest do
     %{shop: shop}
   end
 
-  describe "find_shop/2" do
+  describe "find_shop/1" do
     setup [:insert_user, :insert_shop]
 
-    test "returns a shop", %{shop: shop, user: user} do
-      assert Shops.find_shop(user, %{id: shop.id})
+    test "finds a shop by id", %{shop: shop} do
+      assert Shops.find_shop(%{id: shop.id})
+    end
+
+    test "finds a shop by user id", %{user: user} do
+      assert Shops.find_shop(%{user_id: user.id})
     end
   end
 
