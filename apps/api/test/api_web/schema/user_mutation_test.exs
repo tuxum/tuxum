@@ -19,12 +19,7 @@ defmodule APIWeb.Schema.UserMutationTest do
         }
       """
 
-      data = conn
-        |> post("/graphql", %{query: query})
-        |> json_response(200)
-        |> Map.get("data")
-
-      assert %{"authenticate" => %{"token" => _}} = data
+      assert %{"authenticate" => %{"token" => _}} = graphql_data(conn, query)
     end
 
     test "returns token if email/pass are not correct", %{conn: conn} do
@@ -36,10 +31,7 @@ defmodule APIWeb.Schema.UserMutationTest do
         }
       """
 
-      [error | _] = conn
-        |> post("/graphql", %{query: query})
-        |> json_response(200)
-        |> Map.get("errors")
+      [error | _] = graphql_errors(conn, query)
 
       assert %{"message" => "Unauthorized"} = error
     end
@@ -55,12 +47,9 @@ defmodule APIWeb.Schema.UserMutationTest do
         }
       """
 
-      json = conn
-        |> post("/graphql", %{query: query})
-        |> json_response(200)
-        |> Map.get("data")
+      data = graphql_data(conn, query)
 
-      assert %{"createUser" => %{"name" => "John Doe"}} = json
+      assert %{"createUser" => %{"name" => "John Doe"}} = data
       assert Core.Identities.find_user(%{email: "john@doe.com"})
     end
 
@@ -73,10 +62,7 @@ defmodule APIWeb.Schema.UserMutationTest do
         }
       """
 
-      [error | _] = conn
-        |> post("/graphql", %{query: query})
-        |> json_response(200)
-        |> Map.get("errors")
+      [error | _] = graphql_errors(conn, query)
 
       assert %{"message" => _} = error
       refute Core.Identities.find_user(%{email: "john@doe.com"})
