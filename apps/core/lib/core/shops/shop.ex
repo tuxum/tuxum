@@ -16,5 +16,6 @@ defmodule Core.Shops.Shop do
     user
     |> cast(attrs, ~w[name]a)
     |> validate_required(~w[name]a)
+    |> unique_constraint(:user_id, name: :shops_user_id_index)
   end
 end

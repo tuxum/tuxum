@@ -45,6 +45,11 @@ defmodule Core.ShopsTest do
 
       assert {:error, _} = Shops.insert_shop(user, params)
     end
+
+    test "cannot insert twice", %{user: user} do
+      assert {:ok, _shop} = Shops.insert_shop(user, @params)
+      assert {:error, _} = Shops.insert_shop(user, @params)
+    end
   end
 
   describe "update_shop/2" do
