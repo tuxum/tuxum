@@ -10,7 +10,7 @@ defmodule APIWeb.UserResolver do
     end
   end
 
-  def authenticate(params = %{email: email, password: password}, _resolution) do
+  def authenticate(%{email: email, password: password}, _resolution) do
     case Identities.authenticate(email, password) do
       nil ->
         {:error, "Unauthorized"}
