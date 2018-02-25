@@ -25,6 +25,20 @@ defmodule Core.Shops do
     user
     |> Ecto.build_assoc(:shop)
     |> Shop.changeset(%{name: name})
-    |> repo.insert
+    |> repo.insert()
+  end
+
+  def update_shop(user, %{name: name}) do
+    user
+    |> Ecto.assoc(:shop)
+    |> DB.replica().one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      shop ->
+        shop
+        |> Shop.changeset(%{name: name})
+        |> DB.primary().update()
+    end
   end
 end

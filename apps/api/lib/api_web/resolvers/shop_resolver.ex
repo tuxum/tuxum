@@ -1,6 +1,15 @@
 defmodule APIWeb.ShopResolver do
   alias Core.Shops
 
+  def find_shop(user, _args, _resolution) do
+    case Shops.find_shop(%{user_id: user.id}) do
+      nil ->
+        {:error, "Not Found"}
+      shop ->
+        {:ok, shop}
+    end
+  end
+
   def create_shop(params = %{name: _}, resolution) do
     %{current_user: current_user} = resolution.context
 
@@ -12,12 +21,14 @@ defmodule APIWeb.ShopResolver do
     end
   end
 
-  def find_shop(user, _args, _resolution) do
-    case Shops.find_shop(%{user_id: user.id}) do
-      nil ->
-        {:error, "Not Found"}
-      shop ->
+  def update_shop(params = %{name: _}, resolution) do
+    %{current_user: current_user} = resolution.context
+
+    case Shops.update_shop(current_user, params) do
+      {:ok, shop} ->
         {:ok, shop}
+      {:error, :not_found} ->
+        {:error, "Not Found"} # TODO: Return good error messages
     end
   end
 end

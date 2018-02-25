@@ -46,4 +46,24 @@ defmodule Core.ShopsTest do
       assert {:error, _} = Shops.insert_shop(user, params)
     end
   end
+
+  describe "update_shop/2" do
+    setup [:insert_user, :insert_shop]
+
+    test "updates the user's shop", %{user: user} do
+      {:ok, shop} = Shops.update_shop(user, %{name: "New Name"})
+
+      assert shop.name == "New Name"
+    end
+
+    test "returns error if the user doesn't have shop" do
+      {:ok, %{user: user}} = Identities.insert_user(%{
+        name: "Mary Doe",
+        email: "mary@doe.com",
+        password: "s3cr3tp@ssw0rd"
+      })
+
+      {:error, :not_found} = Shops.update_shop(user, %{name: "New Name"})
+    end
+  end
 end
