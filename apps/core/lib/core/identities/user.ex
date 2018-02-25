@@ -3,12 +3,14 @@ defmodule Core.Identities.User do
   import Ecto.Changeset
 
   alias Core.Identities.PasswordIdentity
+  alias Core.Shops.Shop
 
   schema "users" do
     field :name, :string
     field :email, :string
 
     has_one :password_identity, PasswordIdentity
+    has_many :shops, Shop
 
     timestamps()
   end
