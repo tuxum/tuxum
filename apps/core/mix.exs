@@ -35,7 +35,9 @@ defmodule Core.MixProject do
       {:pbkdf2_elixir, "~> 0.12"},
       {:joken, "~> 1.5"},
 
-      {:db, in_umbrella: true}
+      {:db, in_umbrella: true},
+
+      {:faker, "~> 0.9", only: :test}
     ]
   end
 end

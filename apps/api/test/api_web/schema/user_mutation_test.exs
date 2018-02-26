@@ -1,71 +1,77 @@
 defmodule APIWeb.Schema.UserMutationTest do
   use APIWeb.ConnCase, async: true
 
+  alias Core.{Identities, Fixtures}
+
   describe "authenticate mutation" do
     setup do
-      Core.Identities.insert_user(%{
-        name: "John Doe",
-        email: "john@doe.com",
-        password: "s3cr3tp@ssw0rd"
-      })
+      params = Fixtures.user()
+      user = Identities.insert_user(params)
+
+      %{user: user, params: params}
     end
 
-    test "returns token if email/pass are correct", %{conn: conn} do
+    test "returns token if email/pass are correct", %{conn: conn, params: params} do
       query = """
-        mutation {
-          authenticate(email: "john@doe.com", password: "s3cr3tp@ssw0rd") {
+        mutation ($email: String!, $password: String!) {
+          authenticate(email: $email, password: $password) {
+            token
+          }
+        }
+      """
+      variables = Map.take(params, [:email, :password])
+
+      assert %{"authenticate" => %{"token" => _}} = graphql_data(conn, query, variables)
+    end
+
+    test "returns token if email/pass are not correct", %{conn: conn, params: params} do
+      query = """
+        mutation ($email: String!, $password: String!) {
+          authenticate(email: $email, password: $password) {
             token
           }
         }
       """
 
-      assert %{"authenticate" => %{"token" => _}} = graphql_data(conn, query)
-    end
-
-    test "returns token if email/pass are not correct", %{conn: conn} do
-      query = """
-        mutation {
-          authenticate(email: "john@doe.com", password: "d1ff3r3ntp@ssw0rd") {
-            token
-          }
-        }
-      """
-
-      [error | _] = graphql_errors(conn, query)
+      [error | _] = graphql_errors(conn, query, %{email: params.email, password: "invalid"})
 
       assert %{"message" => "Unauthorized"} = error
     end
   end
 
   describe "createUser mutation" do
-    test "inserts new user", %{conn: conn} do
-      query = """
-        mutation {
-          createUser(name: "John Doe", email: "john@doe.com", password: "s3cr3tp@ssw0rd") {
-            name
-          }
-        }
-      """
-
-      data = graphql_data(conn, query)
-
-      assert %{"createUser" => %{"name" => "John Doe"}} = data
-      assert Core.Identities.find_user(%{email: "john@doe.com"})
+    setup do
+      %{params: Fixtures.user()}
     end
 
-    test "errors when invalid data given", %{conn: conn} do
+    test "inserts new user", %{conn: conn, params: params} do
       query = """
-        mutation {
-          createUser(name: "John Doe", email: "john@doe.com", password: "s3cr3t") {
+        mutation ($name: String!, $email: String!, $password: String!) {
+          createUser(name: $name, email: $email, password: $password) {
             name
           }
         }
       """
 
-      [error | _] = graphql_errors(conn, query)
+      data = graphql_data(conn, query, params)
+
+      assert %{"createUser" => %{"name" => _}} = data
+      assert Identities.find_user(%{email: params.email})
+    end
+
+    test "errors when invalid data given", %{conn: conn, params: params} do
+      query = """
+        mutation ($name: String!, $email: String!, $password: String!) {
+          createUser(name: $name, email: $email, password: $password) {
+            name
+          }
+        }
+      """
+
+      [error | _] = graphql_errors(conn, query, %{params | name: ""})
 
       assert %{"message" => _} = error
-      refute Core.Identities.find_user(%{email: "john@doe.com"})
+      refute Identities.find_user(%{email: params.email})
     end
   end
 end

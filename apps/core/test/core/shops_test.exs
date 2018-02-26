@@ -1,16 +1,12 @@
 defmodule Core.ShopsTest do
   use Core.DataCase, async: true
 
-  alias Core.{Identities, Shops}
+  alias Core.{Identities, Shops, Fixtures}
 
-  @params %{name: "My Shop"}
+  @params Fixtures.shop()
 
   def insert_user(_) do
-    Identities.insert_user(%{
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "s3cr3tp@ssw0rd"
-    })
+    Fixtures.user() |> Identities.insert_user()
   end
 
   def insert_shop(%{user: user}) do
@@ -62,13 +58,10 @@ defmodule Core.ShopsTest do
     end
 
     test "returns error if the user doesn't have shop" do
-      {:ok, %{user: user}} = Identities.insert_user(%{
-        name: "Mary Doe",
-        email: "mary@doe.com",
-        password: "s3cr3tp@ssw0rd"
-      })
+      {:ok, %{user: user}} = Fixtures.user()
+        |> Identities.insert_user()
 
-      {:error, :not_found} = Shops.update_shop(user, %{name: "New Name"})
+      {:error, :not_found} = Shops.update_shop(user, Fixtures.shop())
     end
   end
 end

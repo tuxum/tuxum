@@ -1,15 +1,14 @@
 defmodule APIWeb.Schema.ShopMutationTest do
   use APIWeb.ConnCase, async: true
 
+  alias Core.{Identities, Shops,  Fixtures}
+
   describe "createShop mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Core.Identities.insert_user(%{
-        name: "John Doe",
-        email: "john@doe.com",
-        password: "s3cr3tp@ssw0rd"
-      })
+      {:ok, %{user: user}} = Fixtures.user()
+        |> Identities.insert_user()
 
-      {:ok, token} = Core.Identities.token_from_user(user)
+      {:ok, token} = Identities.token_from_user(user)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
@@ -28,20 +27,16 @@ defmodule APIWeb.Schema.ShopMutationTest do
       data = graphql_data(conn, query)
 
       assert %{"createShop" => %{"name" => "My Shop"}} = data
-      assert Core.Shops.find_shop(%{user_id: user.id})
+      assert Shops.find_shop(%{user_id: user.id})
     end
   end
 
   describe "updateShop mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Core.Identities.insert_user(%{
-        name: "John Doe",
-        email: "john@doe.com",
-        password: "s3cr3tp@ssw0rd"
-      })
-      {:ok, _shop} = Core.Shops.insert_shop(user, %{name: "My Shop"})
+      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, _shop} = Shops.insert_shop(user, Fixtures.shop())
 
-      {:ok, token} = Core.Identities.token_from_user(user)
+      {:ok, token} = Identities.token_from_user(user)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
@@ -60,7 +55,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
       data = graphql_data(conn, query)
 
       assert %{"updateShop" => %{"name" => "New Shop"}} = data
-      assert %{name: "New Shop"} = Core.Shops.find_shop(%{user_id: user.id})
+      assert %{name: "New Shop"} = Shops.find_shop(%{user_id: user.id})
     end
   end
 end

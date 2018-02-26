@@ -24,16 +24,16 @@ defmodule APIWeb.ConnCase do
       # The default endpoint for testing
       @endpoint APIWeb.Endpoint
 
-      def graphql_data(conn, query) do
+      def graphql_data(conn, query, variables \\ %{}) do
         conn
-        |> post("/graphql", %{query: query})
+        |> post("/graphql", %{query: query, variables: variables})
         |> json_response(200)
         |> Map.get("data")
       end
 
-      def graphql_errors(conn, query) do
+      def graphql_errors(conn, query, variables \\ %{}) do
         conn
-        |> post("/graphql", %{query: query})
+        |> post("/graphql", %{query: query, variables: variables})
         |> json_response(200)
         |> Map.get("errors")
       end
