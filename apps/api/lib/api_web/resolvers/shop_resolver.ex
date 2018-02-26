@@ -10,7 +10,7 @@ defmodule APIWeb.ShopResolver do
     end
   end
 
-  def create_shop(params = %{name: _}, resolution) do
+  def create_shop(%{input: params = %{name: _}}, resolution) do
     %{current_user: current_user} = resolution.context
 
     case Shops.insert_shop(current_user, params) do
@@ -21,7 +21,7 @@ defmodule APIWeb.ShopResolver do
     end
   end
 
-  def update_shop(params = %{name: _}, resolution) do
+  def update_shop(%{input: params = %{name: _}}, resolution) do
     %{current_user: current_user} = resolution.context
 
     case Shops.update_shop(current_user, params) do

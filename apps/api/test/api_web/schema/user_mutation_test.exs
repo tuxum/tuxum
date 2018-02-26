@@ -13,27 +13,28 @@ defmodule APIWeb.Schema.UserMutationTest do
 
     test "returns token if email/pass are correct", %{conn: conn, params: params} do
       query = """
-        mutation ($email: String!, $password: String!) {
-          authenticate(email: $email, password: $password) {
+        mutation ($input: AuthenticateInput!) {
+          authenticate(input: $input) {
             token
           }
         }
       """
-      variables = Map.take(params, [:email, :password])
+      variables = %{input: Map.take(params, [:email, :password])}
 
       assert %{"authenticate" => %{"token" => _}} = graphql_data(conn, query, variables)
     end
 
     test "returns token if email/pass are not correct", %{conn: conn, params: params} do
       query = """
-        mutation ($email: String!, $password: String!) {
-          authenticate(email: $email, password: $password) {
+        mutation ($input: AuthenticateInput!) {
+          authenticate(input: $input) {
             token
           }
         }
       """
+      variables = %{input: %{email: params.email, password: "invalid"}}
 
-      [error | _] = graphql_errors(conn, query, %{email: params.email, password: "invalid"})
+      [error | _] = graphql_errors(conn, query, variables)
 
       assert %{"message" => "Unauthorized"} = error
     end
@@ -44,31 +45,33 @@ defmodule APIWeb.Schema.UserMutationTest do
       %{params: Fixtures.user()}
     end
 
-    test "inserts new user", %{conn: conn, params: params} do
+    test "inserts new user", %{conn: conn, params: params = %{name: name}} do
       query = """
-        mutation ($name: String!, $email: String!, $password: String!) {
-          createUser(name: $name, email: $email, password: $password) {
+        mutation ($input: CreateUserInput!) {
+          createUser(input: $input) {
             name
           }
         }
       """
+      variables = %{input: params}
 
-      data = graphql_data(conn, query, params)
+      data = graphql_data(conn, query, variables)
 
-      assert %{"createUser" => %{"name" => _}} = data
+      assert %{"createUser" => %{"name" => ^name}} = data
       assert Identities.find_user(%{email: params.email})
     end
 
     test "errors when invalid data given", %{conn: conn, params: params} do
       query = """
-        mutation ($name: String!, $email: String!, $password: String!) {
-          createUser(name: $name, email: $email, password: $password) {
+        mutation ($input: CreateUserInput!) {
+          createUser(input: $input) {
             name
           }
         }
       """
+      variables = %{input: %{params | name: ""}}
 
-      [error | _] = graphql_errors(conn, query, %{params | name: ""})
+      [error | _] = graphql_errors(conn, query, variables)
 
       assert %{"message" => _} = error
       refute Identities.find_user(%{email: params.email})

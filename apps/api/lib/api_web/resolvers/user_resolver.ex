@@ -1,7 +1,7 @@
 defmodule APIWeb.UserResolver do
   alias Core.Identities
 
-  def create_user(params = %{name: _, email: _, password: _}, _resolution) do
+  def create_user(%{input: params = %{name: _, email: _, password: _}}, _resolution) do
     case Identities.insert_user(params) do
       {:ok, %{user: user}} ->
         {:ok, user}
@@ -10,7 +10,7 @@ defmodule APIWeb.UserResolver do
     end
   end
 
-  def authenticate(%{email: email, password: password}, _resolution) do
+  def authenticate(%{input: %{email: email, password: password}}, _resolution) do
     case Identities.authenticate(email, password) do
       nil ->
         {:error, "Unauthorized"}

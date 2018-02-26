@@ -5,28 +5,28 @@ defmodule APIWeb.Schema.ShopMutationTest do
 
   describe "createShop mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user()
-        |> Identities.insert_user()
+      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
 
       {:ok, token} = Identities.token_from_user(user)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
-      %{conn: conn, user: user}
+      %{conn: conn, user: user, params: Fixtures.shop()}
     end
 
-    test "inserts new shop", %{conn: conn, user: user} do
+    test "inserts new shop", %{conn: conn, user: user, params: params} do
       query = """
-        mutation {
-          createShop(name: "My Shop") {
+        mutation ($input: CreateShopInput!) {
+          createShop(input: $input) {
             name
           }
         }
       """
+      variables = %{input: params}
 
-      data = graphql_data(conn, query)
+      data = graphql_data(conn, query, variables)
 
-      assert %{"createShop" => %{"name" => "My Shop"}} = data
+      assert %{"createShop" => %{"name" => _}} = data
       assert Shops.find_shop(%{user_id: user.id})
     end
   end
@@ -40,22 +40,24 @@ defmodule APIWeb.Schema.ShopMutationTest do
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
-      %{conn: conn, user: user}
+      %{conn: conn, user: user, params: Fixtures.shop()}
     end
 
-    test "updates shop", %{conn: conn, user: user} do
+    test "updates shop", %{conn: conn, user: user, params: params} do
       query = """
-        mutation {
-          updateShop(name: "New Shop") {
+        mutation ($input: UpdateShopInput!) {
+          updateShop(input: $input) {
             name
           }
         }
       """
+      variables = %{input: params}
 
-      data = graphql_data(conn, query)
+      data = graphql_data(conn, query, variables)
 
-      assert %{"updateShop" => %{"name" => "New Shop"}} = data
-      assert %{name: "New Shop"} = Shops.find_shop(%{user_id: user.id})
+      %{name: name} = params
+      assert %{"updateShop" => %{"name" => ^name}} = data
+      assert %{name: ^name} = Shops.find_shop(%{user_id: user.id})
     end
   end
 end
