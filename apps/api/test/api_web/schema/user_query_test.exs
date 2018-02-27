@@ -1,15 +1,13 @@
 defmodule APIWeb.Schema.UserQueryTest do
   use APIWeb.ConnCase, async: true
 
+  alias Core.{Identities, Fixtures}
+
   describe "querying a user" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Core.Identities.insert_user(%{
-        name: "John Doe",
-        email: "john@doe.com",
-        password: "s3cr3tp@ssw0rd"
-      })
+      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
 
-      {:ok, token} = Core.Identities.token_from_user(user)
+      {:ok, token} = Identities.token_from_user(user)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 

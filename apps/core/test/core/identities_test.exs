@@ -3,11 +3,7 @@ defmodule Core.IdentitiesTest do
 
   alias Core.Identities
 
-  @params %{
-    name: "John Doe",
-    email: "john@doe.com",
-    password: "s3cr3tp@ssw0rd"
-  }
+  @params Core.Fixtures.user()
 
   def insert_user(_) do
     Identities.insert_user(@params)

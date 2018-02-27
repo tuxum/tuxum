@@ -8,5 +8,7 @@ defmodule DB.Repo.Migrations.AddShopsTable do
 
       timestamps()
     end
+
+    create unique_index(:shops, [:user_id], name: :shops_user_id_index)
   end
 end
