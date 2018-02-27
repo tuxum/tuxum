@@ -5,7 +5,7 @@ defmodule Core.Shops do
 
   import Ecto.Query, only: [from: 2]
 
-  alias Core.Shops.Shop
+  alias Core.Shops.{Shop, OnetimeProduct}
 
   def find_shop(%{id: id}) do
     repo = DB.replica()
@@ -40,5 +40,12 @@ defmodule Core.Shops do
         |> Shop.changeset(%{name: name})
         |> DB.primary().update()
     end
+  end
+
+  def insert_onetime_product(shop, attrs) do
+    shop
+    |> Ecto.build_assoc(:onetime_product)
+    |> OnetimeProduct.changeset(attrs)
+    |> DB.primary().insert()
   end
 end
