@@ -10,7 +10,7 @@ defmodule Core.Shops.Shop do
 
     belongs_to :user, User
 
-    has_many :onetime_product, OnetimeProduct
+    has_many :onetime_products, OnetimeProduct
 
     timestamps()
   end
