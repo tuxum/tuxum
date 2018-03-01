@@ -62,6 +62,14 @@ defmodule Core.Shops do
     |> DB.primary().insert()
   end
 
+  def update_onetime_product(product, attrs) do
+    attrs = transform_money(attrs)
+
+    product
+    |> OnetimeProduct.changeset(attrs)
+    |> DB.primary().update()
+  end
+
   defp transform_money(attrs) do
     attrs
     |> Enum.map(&do_transform_money/1)

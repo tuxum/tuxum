@@ -18,4 +18,17 @@ defmodule APIWeb.Schema.Objects do
     field :id, non_null(:id)
     field :name, non_null(:string)
   end
+
+  object :onetime_product do
+    field :id, non_null(:id)
+    field :shop_id, non_null(:id)
+    field :name, non_null(:string)
+    field :price, non_null(:money_with_currency)
+    field :shipping_fee, :money_with_currency
+  end
+
+  object :money_with_currency do
+    field :currency, non_null(:string)
+    field :amount, non_null(:string)
+  end
 end
