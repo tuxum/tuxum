@@ -23,8 +23,8 @@ if Mix.env() == :test do
       %{
         name: Faker.Commerce.product_name(),
         is_public: true,
-        price: Money.new(:USD, 100),
-        shipping_fee: Money.new(:USD, 3)
+        price: %{currency: "USD", amount: "100"},
+        shipping_fee: %{currency: "USD", amount: "5"}
       }
     end
   end

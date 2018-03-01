@@ -74,8 +74,6 @@ defmodule Core.ShopsTest do
 
       assert product.name == params.name
       assert product.is_public == params.is_public
-      assert product.price == params.price
-      assert product.shipping_fee == params.shipping_fee
     end
   end
 end
