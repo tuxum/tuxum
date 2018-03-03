@@ -3,15 +3,13 @@ defmodule Core.ShopsTest do
 
   alias Core.{Identities, Shops, Fixtures}
 
-  @params Fixtures.shop()
-
   def insert_user(_) do
-    {:ok, user} = Fixtures.user() |> Identities.insert_user()
+    {:ok, user} = Identities.insert_user(Fixtures.user())
     %{user: user}
   end
 
   def insert_shop(%{user: user}) do
-    {:ok, shop} = Shops.insert_shop(user, @params)
+    {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
     %{shop: shop}
   end
 
@@ -27,20 +25,23 @@ defmodule Core.ShopsTest do
     setup [:insert_user]
 
     test "inserts a shop", %{user: user} do
-      {:ok, shop} = Shops.insert_shop(user, @params)
+      params = Fixtures.shop()
+      {:ok, shop} = Shops.insert_shop(user, params)
 
-      assert shop.name == @params.name
+      assert shop.name == params.name
     end
 
     test "requires a name", %{user: user} do
-      params = %{@params | name: ""}
+      params = Fixtures.shop() |> Map.put(:name, "")
 
       assert {:error, _} = Shops.insert_shop(user, params)
     end
 
     test "cannot insert twice", %{user: user} do
-      assert {:ok, _shop} = Shops.insert_shop(user, @params)
-      assert {:error, _} = Shops.insert_shop(user, @params)
+      params = Fixtures.shop()
+
+      assert {:ok, _shop} = Shops.insert_shop(user, params)
+      assert {:error, _} = Shops.insert_shop(user, params)
     end
   end
 
