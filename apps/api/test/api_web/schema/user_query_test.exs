@@ -5,7 +5,7 @@ defmodule APIWeb.Schema.UserQueryTest do
 
   describe "querying a user" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, user} = Fixtures.user() |> Identities.insert_user()
 
       {:ok, token} = Identities.token_from_user(user)
       conn = conn

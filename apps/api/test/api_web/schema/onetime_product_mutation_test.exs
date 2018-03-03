@@ -5,7 +5,7 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
   describe "createOnetimeProduct mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, user} = Fixtures.user() |> Identities.insert_user()
       {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
 
       {:ok, token} = Identities.token_from_user(user)
@@ -37,7 +37,7 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
   describe "updateOnetimeProduct mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, user} = Fixtures.user() |> Identities.insert_user()
       {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
       {:ok, product} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
 

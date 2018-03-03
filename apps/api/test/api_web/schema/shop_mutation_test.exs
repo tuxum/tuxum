@@ -5,7 +5,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
 
   describe "createShop mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, user} = Fixtures.user() |> Identities.insert_user()
 
       {:ok, token} = Identities.token_from_user(user)
       conn = conn
@@ -33,7 +33,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
 
   describe "updateShop mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, user} = Fixtures.user() |> Identities.insert_user()
       {:ok, _shop} = Shops.insert_shop(user, Fixtures.shop())
 
       {:ok, token} = Identities.token_from_user(user)

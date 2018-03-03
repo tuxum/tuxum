@@ -40,6 +40,12 @@ defmodule Core.Identities do
       |> repo.insert()
     end)
     |> repo.transaction()
+    |> case do
+      {:ok, %{user: user, password_identity: password_identity}} ->
+        {:ok, %User{user | password_identity: password_identity}}
+      error ->
+        error
+    end
   end
 
   def authenticate(email, password) do

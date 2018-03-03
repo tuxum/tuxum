@@ -6,7 +6,8 @@ defmodule Core.IdentitiesTest do
   @params Core.Fixtures.user()
 
   def insert_user(_) do
-    Identities.insert_user(@params)
+    {:ok, user} = Identities.insert_user(@params)
+    %{user: user}
   end
 
   describe "find_user/1" do
@@ -20,7 +21,7 @@ defmodule Core.IdentitiesTest do
 
   describe "insert_user/1" do
     test "inserts a user and the identity" do
-      {:ok, %{user: user, password_identity: _}} = Identities.insert_user(@params)
+      {:ok, user} = Identities.insert_user(@params)
 
       assert user.name == @params.name
       assert user.email == @params.email
@@ -46,7 +47,7 @@ defmodule Core.IdentitiesTest do
       |> Enum.each(fn email ->
         params = %{@params | email: email}
 
-        assert {:ok, _changes} = Identities.insert_user(params)
+        assert {:ok, _user} = Identities.insert_user(params)
       end)
 
       ~w[
@@ -61,7 +62,7 @@ defmodule Core.IdentitiesTest do
     end
 
     test "ensure email is unique" do
-      assert {:ok, _} = Identities.insert_user(@params)
+      assert {:ok, _user} = Identities.insert_user(@params)
       assert {:error, :user, changeset, _} = Identities.insert_user(@params)
       assert %{errors: [email: _]} = changeset
     end

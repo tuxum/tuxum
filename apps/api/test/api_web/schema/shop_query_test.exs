@@ -5,7 +5,7 @@ defmodule APIWeb.Schema.ShopQueryTest do
 
   describe "querying a shop" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
+      {:ok, user} = Fixtures.user() |> Identities.insert_user()
       {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
 
       {:ok, token} = Identities.token_from_user(user)

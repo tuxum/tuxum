@@ -6,7 +6,8 @@ defmodule Core.ShopsTest do
   @params Fixtures.shop()
 
   def insert_user(_) do
-    Fixtures.user() |> Identities.insert_user()
+    {:ok, user} = Fixtures.user() |> Identities.insert_user()
+    %{user: user}
   end
 
   def insert_shop(%{user: user}) do
@@ -54,7 +55,7 @@ defmodule Core.ShopsTest do
     end
 
     test "returns error if the user doesn't have shop" do
-      {:ok, %{user: user}} = Fixtures.user()
+      {:ok, user} = Fixtures.user()
         |> Identities.insert_user()
 
       {:error, :not_found} = Shops.update_shop(user, Fixtures.shop())
