@@ -8,7 +8,7 @@ defmodule APIWeb.OnetimeProductResolver do
   def create_onetime_product(%{shop_id: shop_id, input: params}, resolution) do
     %{current_user: current_user} = resolution.context
 
-    with shop when shop != nil <- Shops.find_shop(%{user_id: current_user.id}),
+    with shop when shop != nil <- Shops.find_shop(current_user),
          {:ok, product} <- Shops.insert_onetime_product(shop, params) do
       {:ok, product}
     else
@@ -22,7 +22,7 @@ defmodule APIWeb.OnetimeProductResolver do
   def update_onetime_product(%{product_id: product_id, input: params}, resolution) do
     %{current_user: current_user} = resolution.context
 
-    with shop when shop != nil <- Shops.find_shop(%{user_id: current_user.id}),
+    with shop when shop != nil <- Shops.find_shop(current_user),
          {:ok, product} <- Shops.find_onetime_product(shop, %{id: product_id}),
          {:ok, product} <- Shops.update_onetime_product(product, params) do
       {:ok, product}

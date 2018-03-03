@@ -27,7 +27,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
       data = graphql_data(conn, query, variables)
 
       assert %{"createShop" => %{"name" => _}} = data
-      assert Shops.find_shop(%{user_id: user.id})
+      assert Shops.find_shop(user)
     end
   end
 
@@ -57,7 +57,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
 
       %{name: name} = params
       assert %{"updateShop" => %{"name" => ^name}} = data
-      assert %{name: ^name} = Shops.find_shop(%{user_id: user.id})
+      assert %{name: ^name} = Shops.find_shop(user)
     end
   end
 end

@@ -2,7 +2,7 @@ defmodule APIWeb.ShopResolver do
   alias Core.Shops
 
   def find_shop(user, _args, _resolution) do
-    case Shops.find_shop(%{user_id: user.id}) do
+    case Shops.find_shop(user) do
       nil ->
         {:error, "Not Found"}
       shop ->

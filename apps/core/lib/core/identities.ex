@@ -3,7 +3,7 @@ defmodule Core.Identities do
   Module provides functionality around user identities.
   """
 
-  import Ecto.Query, only: [from: 2]
+  import Ecto.Query
 
   alias Ecto.Multi
   alias Core.Identities.{User, PasswordIdentity, Token}
@@ -18,15 +18,13 @@ defmodule Core.Identities do
   @callback token_from_user(%User{}) :: {:ok, String.t()}
 
   def find_user(%{email: email}) do
-    repo = DB.replica()
-
-    from(u in User, where: u.email == ^email) |> repo.one
+    User
+    |> where([u], u.email == ^email)
+    |> DB.replica().one()
   end
 
   def find_user(%{id: id}) do
-    repo = DB.replica()
-
-    from(u in User, where: u.id == ^id) |> repo.one
+    User |> DB.replica().get(id)
   end
 
   def insert_user(%{name: name, email: email, password: password}) do
@@ -39,9 +37,9 @@ defmodule Core.Identities do
       user
       |> Ecto.build_assoc(:password_identity)
       |> PasswordIdentity.changeset(%{password: password})
-      |> repo.insert
+      |> repo.insert()
     end)
-    |> repo.transaction
+    |> repo.transaction()
   end
 
   def authenticate(email, password) do

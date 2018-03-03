@@ -3,32 +3,28 @@ defmodule Core.Shops do
   Provides functionality to manage shops
   """
 
-  import Ecto.Query, only: [from: 2]
+  import Ecto
+  import Ecto.Query
 
   alias Core.Shops.{Shop, OnetimeProduct}
+  alias Core.Identities.{User}
 
-  def find_shop(%{id: id}) do
+  def find_shop(%User{id: id}) do
     repo = DB.replica()
 
-    from(s in Shop, where: s.id == ^id) |> repo.one
+    from(s in Shop, where: s.user_id == ^id) |> repo.one
   end
 
-  def find_shop(%{user_id: user_id}) do
-    repo = DB.replica()
-
-    from(s in Shop, where: s.user_id == ^user_id) |> repo.one
-  end
-
-  def insert_shop(user, %{name: name}) do
+  def insert_shop(user = %User{}, attrs) do
     repo = DB.primary()
 
     user
     |> Ecto.build_assoc(:shop)
-    |> Shop.changeset(%{name: name})
+    |> Shop.changeset(attrs)
     |> repo.insert()
   end
 
-  def update_shop(user, %{name: name}) do
+  def update_shop(user = %User{}, attrs) do
     user
     |> Ecto.assoc(:shop)
     |> DB.replica().one()
@@ -37,13 +33,15 @@ defmodule Core.Shops do
         {:error, :not_found}
       shop ->
         shop
-        |> Shop.changeset(%{name: name})
+        |> Shop.changeset(attrs)
         |> DB.primary().update()
     end
   end
 
-  def find_onetime_product(shop, %{id: id}) do
-    from(p in Ecto.assoc(shop, :onetime_products), where: p.id == ^id)
+  def find_onetime_product(shop = %Shop{}, %{id: id}) do
+    shop
+    |> assoc(:onetime_products)
+    |> where([p], p.id == ^id)
     |> DB.replica().one()
     |> case do
       nil ->
@@ -53,7 +51,7 @@ defmodule Core.Shops do
     end
   end
 
-  def insert_onetime_product(shop, attrs) do
+  def insert_onetime_product(shop = %Shop{}, attrs) do
     attrs = transform_money(attrs)
 
     shop
@@ -62,7 +60,7 @@ defmodule Core.Shops do
     |> DB.primary().insert()
   end
 
-  def update_onetime_product(product, attrs) do
+  def update_onetime_product(product = %OnetimeProduct{}, attrs) do
     attrs = transform_money(attrs)
 
     product
