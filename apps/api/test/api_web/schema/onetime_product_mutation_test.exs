@@ -1,7 +1,7 @@
 defmodule APIWeb.Schema.OnetimeProductMutationTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Identities, Shops,  Fixtures}
+  alias Core.{Identities, Shops, Products, Fixtures}
 
   describe "createOnetimeProduct mutation" do
     setup %{conn: conn} do
@@ -31,7 +31,7 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
       data = graphql_data(conn, query, variables)
 
       assert %{"createOnetimeProduct" => %{"id" => id, "name" => _}} = data
-      assert Shops.find_onetime_product(shop, %{id: id})
+      assert {:ok, _product} = Products.find_onetime_product(shop, %{id: id})
     end
   end
 
@@ -39,7 +39,7 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
     setup %{conn: conn} do
       {:ok, user} = Fixtures.user() |> Identities.insert_user()
       {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
-      {:ok, product} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
+      {:ok, product} = Products.insert_onetime_product(shop, Fixtures.onetime_product())
 
       {:ok, token} = Identities.token_from_user(user)
       conn = conn
@@ -63,7 +63,7 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
       %{name: name} = params
       assert %{"updateOnetimeProduct" => %{"name" => ^name}} = data
-      assert {:ok, %{name: ^name}} = Shops.find_onetime_product(shop, %{id: product.id})
+      assert {:ok, %{name: ^name}} = Products.find_onetime_product(shop, %{id: product.id})
     end
   end
 end

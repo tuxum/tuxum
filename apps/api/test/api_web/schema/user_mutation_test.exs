@@ -6,7 +6,7 @@ defmodule APIWeb.Schema.UserMutationTest do
   describe "authenticate mutation" do
     setup do
       params = Fixtures.user()
-      user = Identities.insert_user(params)
+      {:ok, user} = Identities.insert_user(params)
 
       %{user: user, params: params}
     end
@@ -58,7 +58,7 @@ defmodule APIWeb.Schema.UserMutationTest do
       data = graphql_data(conn, query, variables)
 
       assert %{"createUser" => %{"name" => ^name}} = data
-      assert Identities.find_user(%{email: params.email})
+      assert {:ok, _user} = Identities.find_user(%{email: params.email})
     end
 
     test "errors when invalid data given", %{conn: conn, params: params} do
@@ -74,7 +74,7 @@ defmodule APIWeb.Schema.UserMutationTest do
       [error | _] = graphql_errors(conn, query, variables)
 
       assert %{"message" => _} = error
-      refute Identities.find_user(%{email: params.email})
+      assert {:error, :not_found} = Identities.find_user(%{email: params.email})
     end
   end
 end

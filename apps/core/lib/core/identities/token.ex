@@ -1,4 +1,7 @@
 defmodule Core.Identities.Token do
+
+  @type t :: String.t()
+
   def to_user(token) do
     token
     |> Joken.token
@@ -21,7 +24,10 @@ defmodule Core.Identities.Token do
   end
 
   defp claim_to_user(%{"user_id" => user_id}) do
-    Core.Identities.find_user(%{id: user_id})
+    case Core.Identities.find_user(%{id: user_id}) do
+      {:ok, user} -> user
+      _ -> nil
+    end
   end
 
   defp claim_to_user(_) do

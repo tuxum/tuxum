@@ -4,6 +4,8 @@ defmodule Core.Identities.PasswordIdentity do
 
   alias Core.Identities.User
 
+  @type t :: %__MODULE__{}
+
   schema "password_identities" do
     field :digest, :string
     field :password, :string, virtual: true

@@ -1,15 +1,16 @@
 defmodule APIWeb.OnetimeProductResolver do
-  alias Core.Shops
+
+  alias Core.{Shops, Products}
 
   def find_onetime_product(shop, %{onetime_product_id: id}, _resolution) do
-    Shops.find_onetime_product(shop, %{id: id})
+    Products.find_onetime_product(shop, %{id: id})
   end
 
   def create_onetime_product(%{shop_id: shop_id, input: params}, resolution) do
     %{current_user: current_user} = resolution.context
 
-    with shop when shop != nil <- Shops.find_shop(current_user),
-         {:ok, product} <- Shops.insert_onetime_product(shop, params) do
+    with {:ok, shop} <- Shops.find_shop(current_user),
+         {:ok, product} <- Products.insert_onetime_product(shop, params) do
       {:ok, product}
     else
       {:error, _} ->
@@ -22,9 +23,9 @@ defmodule APIWeb.OnetimeProductResolver do
   def update_onetime_product(%{product_id: product_id, input: params}, resolution) do
     %{current_user: current_user} = resolution.context
 
-    with shop when shop != nil <- Shops.find_shop(current_user),
-         {:ok, product} <- Shops.find_onetime_product(shop, %{id: product_id}),
-         {:ok, product} <- Shops.update_onetime_product(product, params) do
+    with {:ok, shop} <- Shops.find_shop(current_user),
+         {:ok, product} <- Products.find_onetime_product(shop, %{id: product_id}),
+         {:ok, product} <- Products.update_onetime_product(product, params) do
       {:ok, product}
     else
       {:error, _} ->

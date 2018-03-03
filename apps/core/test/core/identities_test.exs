@@ -14,8 +14,8 @@ defmodule Core.IdentitiesTest do
     setup [:insert_user]
 
     test "returns a user by email", %{user: user} do
-      assert Identities.find_user(%{email: user.email})
-      assert Identities.find_user(%{id: user.id})
+      assert {:ok, _user} = Identities.find_user(%{email: user.email})
+      assert {:ok, _user} = Identities.find_user(%{id: user.id})
     end
   end
 
@@ -30,13 +30,13 @@ defmodule Core.IdentitiesTest do
     test "requires a name" do
       params = %{@params | name: ""}
 
-      assert {:error, :user, _, _} = Identities.insert_user(params)
+      assert {:error, _changeset} = Identities.insert_user(params)
     end
 
     test "reqiures a email" do
       params = %{@params | email: ""}
 
-      assert {:error, :user, _, _} = Identities.insert_user(params)
+      assert {:error, _changeset} = Identities.insert_user(params)
     end
 
     test "validates email format" do
@@ -57,20 +57,20 @@ defmodule Core.IdentitiesTest do
       |> Enum.each(fn email ->
         params = %{@params | email: email}
 
-        assert {:error, :user, _, _} = Identities.insert_user(params)
+        assert {:error, _changeset} = Identities.insert_user(params)
       end)
     end
 
     test "ensure email is unique" do
       assert {:ok, _user} = Identities.insert_user(@params)
-      assert {:error, :user, changeset, _} = Identities.insert_user(@params)
+      assert {:error, changeset} = Identities.insert_user(@params)
       assert %{errors: [email: _]} = changeset
     end
 
     test "requires a password" do
       params = %{@params | password: ""}
 
-      assert {:error, :password_identity, _, _} = Identities.insert_user(params)
+      assert {:error, _changeset} = Identities.insert_user(params)
     end
   end
 

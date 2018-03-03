@@ -3,10 +3,10 @@ defmodule APIWeb.ShopResolver do
 
   def find_shop(user, _args, _resolution) do
     case Shops.find_shop(user) do
-      nil ->
-        {:error, "Not Found"}
-      shop ->
+      {:ok, shop} ->
         {:ok, shop}
+      _ ->
+        {:error, "Not Found"}
     end
   end
 

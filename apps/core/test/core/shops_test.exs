@@ -12,7 +12,6 @@ defmodule Core.ShopsTest do
 
   def insert_shop(%{user: user}) do
     {:ok, shop} = Shops.insert_shop(user, @params)
-
     %{shop: shop}
   end
 
@@ -59,18 +58,6 @@ defmodule Core.ShopsTest do
         |> Identities.insert_user()
 
       {:error, :not_found} = Shops.update_shop(user, Fixtures.shop())
-    end
-  end
-
-  describe "insert_onetime_product/2" do
-    setup [:insert_user, :insert_shop]
-
-    test "inserts a onetime product", %{shop: shop} do
-      params = Fixtures.onetime_product()
-      {:ok, product} = Shops.insert_onetime_product(shop, params)
-
-      assert product.name == params.name
-      assert product.is_public == params.is_public
     end
   end
 end

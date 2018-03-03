@@ -8,25 +8,27 @@ defmodule Core.Identities do
   alias Ecto.Multi
   alias Core.Identities.{User, PasswordIdentity, Token}
 
-  @callback find_user(map()) :: %User{}
-  @callback insert_user(map()) ::
-    {:ok, %{user: %User{}, password_identity: %PasswordIdentity{}}} |
-    {:error, atom(), Ecto.Changeset.t(), map()}
-  @callback authenticate(String.t(), String.t()) :: %User{} | nil
-  @callback correct_password?(%User{}, String.t()) :: boolean()
-  @callback user_from_token(String.t()) :: {:ok, %User{}} | :error
-  @callback token_from_user(%User{}) :: {:ok, String.t()}
-
+  @spec find_user(map()) :: {:ok, User.t()} | {:error, :not_found}
   def find_user(%{email: email}) do
     User
     |> where([u], u.email == ^email)
     |> DB.replica().one()
+    |> case do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
   end
 
   def find_user(%{id: id}) do
-    User |> DB.replica().get(id)
+    User
+    |> DB.replica().get(id)
+    |> case do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
   end
 
+  @spec insert_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   def insert_user(%{name: name, email: email, password: password}) do
     repo = DB.primary()
     user_changeset = %User{} |> User.changeset(%{name: name, email: email})
@@ -43,20 +45,22 @@ defmodule Core.Identities do
     |> case do
       {:ok, %{user: user, password_identity: password_identity}} ->
         {:ok, %User{user | password_identity: password_identity}}
-      error ->
-        error
+      {:error, _, changeset, _} ->
+        {:error, changeset}
     end
   end
 
+  @spec authenticate(String.t(), String.t()) :: {:ok, User.t()} | :error
   def authenticate(email, password) do
-    with user when user != nil <- find_user(%{email: email}),
+    with {:ok, user} <- find_user(%{email: email}),
          true <- correct_password?(user, password) do
-      user
+      {:ok, user}
     else
-      _ -> nil
+      _ -> :error
     end
   end
 
+  @spec correct_password?(User.t(), String.t()) :: boolean()
   def correct_password?(user, password) do
     repo = DB.replica()
 
@@ -68,6 +72,7 @@ defmodule Core.Identities do
     end
   end
 
+  @spec user_from_token(Token.t()) :: {:ok, User.t()} | :error
   def user_from_token(token) do
     case Token.to_user(token) do
       nil -> :error
@@ -75,6 +80,7 @@ defmodule Core.Identities do
     end
   end
 
+  @spec token_from_user(User.t()) :: {:ok, Token.t()}
   def token_from_user(user) do
     {:ok, Token.from_user(user)}
   end
