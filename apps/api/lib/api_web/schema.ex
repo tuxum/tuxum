@@ -5,6 +5,7 @@ defmodule APIWeb.Schema do
 
   import_types APIWeb.Schema.UserTypes
   import_types APIWeb.Schema.ShopTypes
+  import_types APIWeb.Schema.OnetimeProductTypes
 
   query do
     import_fields :user_queries
@@ -13,5 +14,6 @@ defmodule APIWeb.Schema do
   mutation do
     import_fields :user_mutations
     import_fields :shop_mutations
+    import_fields :onetime_product_mutations
   end
 end

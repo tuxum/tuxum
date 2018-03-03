@@ -3,11 +3,14 @@ defmodule Core.Shops.Shop do
   import Ecto.Changeset
 
   alias Core.Identities.User
+  alias Core.Shops.OnetimeProduct
 
   schema "shops" do
     field :name, :string
 
     belongs_to :user, User
+
+    has_many :onetime_products, OnetimeProduct
 
     timestamps()
   end

@@ -18,5 +18,14 @@ if Mix.env() == :test do
         name: Faker.Company.name()
       }
     end
+
+    def onetime_product do
+      %{
+        name: Faker.Commerce.product_name(),
+        is_public: true,
+        price: %{currency: "USD", amount: "100"},
+        shipping_fee: %{currency: "USD", amount: "5"}
+      }
+    end
   end
 end

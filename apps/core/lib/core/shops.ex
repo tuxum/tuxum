@@ -5,7 +5,7 @@ defmodule Core.Shops do
 
   import Ecto.Query, only: [from: 2]
 
-  alias Core.Shops.Shop
+  alias Core.Shops.{Shop, OnetimeProduct}
 
   def find_shop(%{id: id}) do
     repo = DB.replica()
@@ -41,4 +41,46 @@ defmodule Core.Shops do
         |> DB.primary().update()
     end
   end
+
+  def find_onetime_product(shop, %{id: id}) do
+    from(p in Ecto.assoc(shop, :onetime_products), where: p.id == ^id)
+    |> DB.replica().one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      product ->
+        {:ok, product}
+    end
+  end
+
+  def insert_onetime_product(shop, attrs) do
+    attrs = transform_money(attrs)
+
+    shop
+    |> Ecto.build_assoc(:onetime_products)
+    |> OnetimeProduct.changeset(attrs)
+    |> DB.primary().insert()
+  end
+
+  def update_onetime_product(product, attrs) do
+    attrs = transform_money(attrs)
+
+    product
+    |> OnetimeProduct.changeset(attrs)
+    |> DB.primary().update()
+  end
+
+  defp transform_money(attrs) do
+    attrs
+    |> Enum.map(&do_transform_money/1)
+    |> Enum.into(%{})
+  end
+
+  defp do_transform_money({key, %{currency: currency, amount: amount}}) do
+    {:ok, money} = %{"currency" => currency, "amount" => amount}
+      |> Money.Ecto.Map.Type.load
+
+    {key, money}
+  end
+  defp do_transform_money(pair), do: pair
 end

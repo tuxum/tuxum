@@ -12,7 +12,8 @@ defmodule Core.MixProject do
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -34,10 +35,19 @@ defmodule Core.MixProject do
       {:comeonin, "~> 4.0"},
       {:pbkdf2_elixir, "~> 0.12"},
       {:joken, "~> 1.5"},
+      {:poison, "~> 3.1"},
+      {:decimal, "~> 1.4"},
+      {:ex_money, "~> 2.2"},
 
       {:db, in_umbrella: true},
 
       {:faker, "~> 0.9", only: :test}
+    ]
+  end
+
+  defp aliases do
+    [
+      test: ["ecto.create --quiet -r DB.Repo", "ecto.migrate -r DB.Repo", "test"]
     ]
   end
 end
