@@ -4,7 +4,7 @@ defmodule APIWeb.UserResolver do
   def create_user(%{input: params = %{name: _, email: _, password: _}}, _resolution) do
     case Identities.insert_user(params) do
       {:ok, user} ->
-        {:ok, user}
+        {:ok, %{user: user}}
       {:error, _} ->
         {:error, "Something bad happen"} # TODO: Return good error messages
     end

@@ -15,7 +15,7 @@ defmodule APIWeb.ShopResolver do
 
     case Shops.insert_shop(current_user, params) do
       {:ok, shop} ->
-        {:ok, shop}
+        {:ok, %{shop: shop}}
       {:error, _} ->
         {:error, "Something bad happen"} # TODO: Return good error messages
     end
@@ -26,7 +26,7 @@ defmodule APIWeb.ShopResolver do
 
     case Shops.update_shop(current_user, params) do
       {:ok, shop} ->
-        {:ok, shop}
+        {:ok, %{shop: shop}}
       {:error, :not_found} ->
         {:error, "Not Found"} # TODO: Return good error messages
     end

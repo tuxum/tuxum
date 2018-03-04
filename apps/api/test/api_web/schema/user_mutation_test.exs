@@ -49,15 +49,19 @@ defmodule APIWeb.Schema.UserMutationTest do
       query = """
         mutation ($input: CreateUserInput!) {
           createUser(input: $input) {
-            name
+            user {
+              name
+            }
           }
         }
       """
       variables = %{input: params}
 
       data = graphql_data(conn, query, variables)
+        |> Map.get("createUser")
+        |> Map.get("user")
 
-      assert %{"createUser" => %{"name" => ^name}} = data
+      assert %{"name" => ^name} = data
       assert {:ok, _user} = Identities.find_user(%{email: params.email})
     end
 
@@ -65,7 +69,9 @@ defmodule APIWeb.Schema.UserMutationTest do
       query = """
         mutation ($input: CreateUserInput!) {
           createUser(input: $input) {
-            name
+            user {
+              name
+            }
           }
         }
       """

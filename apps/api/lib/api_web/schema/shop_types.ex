@@ -2,7 +2,7 @@ defmodule APIWeb.Schema.ShopTypes do
   use Absinthe.Schema.Notation
 
   object :shop_mutations do
-    field :create_shop, :shop do
+    field :create_shop, :create_shop_payload do
       middleware APIWeb.AuthMiddleware
 
       arg :input, non_null(:create_shop_input)
@@ -10,7 +10,7 @@ defmodule APIWeb.Schema.ShopTypes do
       resolve &APIWeb.ShopResolver.create_shop/2
     end
 
-    field :update_shop, :shop do
+    field :update_shop, :update_shop_payload do
       middleware APIWeb.AuthMiddleware
 
       arg :input, non_null(:update_shop_input)
@@ -23,7 +23,15 @@ defmodule APIWeb.Schema.ShopTypes do
     field :name, non_null(:string)
   end
 
+  object :create_shop_payload do
+    field :shop, non_null(:shop)
+  end
+
   input_object :update_shop_input do
     field :name, non_null(:string)
+  end
+
+  object :update_shop_payload do
+    field :shop, non_null(:shop)
   end
 end

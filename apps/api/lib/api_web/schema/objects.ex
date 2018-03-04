@@ -10,10 +10,6 @@ defmodule APIWeb.Schema.Objects do
     end
   end
 
-  object :auth_token do
-    field :token, :string
-  end
-
   object :shop do
     field :id, non_null(:id)
     field :name, non_null(:string)
@@ -23,6 +19,7 @@ defmodule APIWeb.Schema.Objects do
     field :id, non_null(:id)
     field :shop_id, non_null(:id)
     field :name, non_null(:string)
+    field :is_public, non_null(:boolean)
     field :price, non_null(:money_with_currency)
     field :shipping_fee, :money_with_currency
   end

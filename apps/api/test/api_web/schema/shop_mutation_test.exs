@@ -18,7 +18,9 @@ defmodule APIWeb.Schema.ShopMutationTest do
       query = """
         mutation ($input: CreateShopInput!) {
           createShop(input: $input) {
-            name
+            shop {
+              name
+            }
           }
         }
       """
@@ -26,7 +28,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
 
       data = graphql_data(conn, query, variables)
 
-      assert %{"createShop" => %{"name" => _}} = data
+      assert %{"createShop" => %{"shop" => %{"name" => _}}} = data
       assert {:ok, _shop} = Shops.find_shop(user)
     end
   end
@@ -47,7 +49,9 @@ defmodule APIWeb.Schema.ShopMutationTest do
       query = """
         mutation ($input: UpdateShopInput!) {
           updateShop(input: $input) {
-            name
+            shop {
+              name
+            }
           }
         }
       """
@@ -56,7 +60,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
       data = graphql_data(conn, query, variables)
 
       %{name: name} = params
-      assert %{"updateShop" => %{"name" => ^name}} = data
+      assert %{"updateShop" => %{"shop" => %{"name" => ^name}}} = data
       assert {:ok, %{name: ^name}} = Shops.find_shop(user)
     end
   end

@@ -19,18 +19,23 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
     test "inserts new onetime product", %{conn: conn, shop: shop, params: params} do
       query = """
-        mutation ($shopId: ID!, $input: CreateOnetimeProductInput!) {
-          createOnetimeProduct(shopId: $shopId, input: $input) {
-            id
-            name
+        mutation ($input: CreateOnetimeProductInput!) {
+          createOnetimeProduct(input: $input) {
+            onetimeProduct {
+              id
+              name
+            }
           }
         }
       """
-      variables = %{shopId: shop.id, input: (params)}
+      variables = %{input: params}
 
       data = graphql_data(conn, query, variables)
+        |> Map.get("createOnetimeProduct")
+        |> Map.get("onetimeProduct")
 
-      assert %{"createOnetimeProduct" => %{"id" => id, "name" => _}} = data
+      %{name: name} = params
+      assert %{"id" => id, "name" => ^name} = data
       assert {:ok, _product} = Shops.find_onetime_product(shop, %{id: id})
     end
   end
@@ -50,19 +55,23 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
     test "updates onetime product", %{conn: conn, shop: shop, product: product, params: params} do
       query = """
-        mutation ($productId: ID!, $input: UpdateOnetimeProductInput!) {
-          updateOnetimeProduct(productId: $productId, input: $input) {
-            id
-            name
+        mutation ($input: UpdateOnetimeProductInput!) {
+          updateOnetimeProduct(input: $input) {
+            onetimeProduct {
+              id
+              name
+            }
           }
         }
       """
-      variables = %{productId: product.id, input: params}
+      variables = %{input: Map.put(params, :onetime_product_id, product.id)}
 
       data = graphql_data(conn, query, variables)
+        |> Map.get("updateOnetimeProduct")
+        |> Map.get("onetimeProduct")
 
       %{name: name} = params
-      assert %{"updateOnetimeProduct" => %{"name" => ^name}} = data
+      assert %{"name" => ^name} = data
       assert {:ok, %{name: ^name}} = Shops.find_onetime_product(shop, %{id: product.id})
     end
   end

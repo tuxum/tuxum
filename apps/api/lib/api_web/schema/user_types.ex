@@ -14,13 +14,13 @@ defmodule APIWeb.Schema.UserTypes do
   end
 
   object :user_mutations do
-    field :authenticate, :auth_token do
+    field :authenticate, :authenticate_payload do
       arg :input, non_null(:authenticate_input)
 
       resolve &APIWeb.UserResolver.authenticate/2
     end
 
-    field :create_user, :user do
+    field :create_user, :create_user_payload do
       arg :input, non_null(:create_user_input)
 
       resolve &APIWeb.UserResolver.create_user/2
@@ -32,9 +32,17 @@ defmodule APIWeb.Schema.UserTypes do
     field :password, non_null(:string)
   end
 
+  object :authenticate_payload do
+    field :token, :string
+  end
+
   input_object :create_user_input do
     field :name, non_null(:string)
     field :email, non_null(:string)
     field :password, non_null(:string)
+  end
+
+  object :create_user_payload do
+    field :user, non_null(:user)
   end
 end

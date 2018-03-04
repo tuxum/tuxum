@@ -6,12 +6,12 @@ defmodule APIWeb.OnetimeProductResolver do
     Shops.find_onetime_product(shop, %{id: id})
   end
 
-  def create_onetime_product(%{shop_id: shop_id, input: params}, resolution) do
+  def create_onetime_product(%{input: params}, resolution) do
     %{current_user: current_user} = resolution.context
 
     with {:ok, shop} <- Shops.find_shop(current_user),
          {:ok, product} <- Shops.insert_onetime_product(shop, params) do
-      {:ok, product}
+      {:ok, %{onetime_product: product}}
     else
       {:error, _} ->
         {:error, "Something bad happen"} # TODO: Return good error messages
@@ -20,13 +20,14 @@ defmodule APIWeb.OnetimeProductResolver do
     end
   end
 
-  def update_onetime_product(%{product_id: product_id, input: params}, resolution) do
+  def update_onetime_product(%{input: params}, resolution) do
     %{current_user: current_user} = resolution.context
+    {product_id, params} = Map.pop(params, :onetime_product_id)
 
     with {:ok, shop} <- Shops.find_shop(current_user),
          {:ok, product} <- Shops.find_onetime_product(shop, %{id: product_id}),
          {:ok, product} <- Shops.update_onetime_product(product, params) do
-      {:ok, product}
+      {:ok, %{onetime_product: product}}
     else
       {:error, _} ->
         {:error, "Something bad happen"} # TODO: Return good error messages
