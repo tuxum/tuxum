@@ -1,12 +1,12 @@
 defmodule APIWeb.Schema.OwnerMutationTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Identities, Fixtures}
+  alias Core.{Accounts, Fixtures}
 
   describe "authenticate mutation" do
     setup do
       params = Fixtures.owner()
-      {:ok, owner} = Identities.insert_owner(params)
+      {:ok, owner} = Accounts.insert_owner(params)
 
       %{owner: owner, params: params}
     end

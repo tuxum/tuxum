@@ -7,7 +7,7 @@ defmodule Core.Shops do
   import Ecto.Query
 
   alias Core.Shops.{Shop, OnetimeProduct}
-  alias Core.Identities.{Owner}
+  alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
     Shop

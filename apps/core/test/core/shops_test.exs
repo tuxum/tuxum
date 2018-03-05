@@ -1,10 +1,10 @@
 defmodule Core.ShopsTest do
   use Core.DataCase, async: true
 
-  alias Core.{Identities, Shops, Fixtures}
+  alias Core.{Accounts, Shops, Fixtures}
 
   def insert_owner(_) do
-    {:ok, owner} = Identities.insert_owner(Fixtures.owner())
+    {:ok, owner} = Accounts.insert_owner(Fixtures.owner())
     %{owner: owner}
   end
 
@@ -56,7 +56,7 @@ defmodule Core.ShopsTest do
 
     test "returns error if the owner doesn't have shop" do
       {:ok, owner} = Fixtures.owner()
-        |> Identities.insert_owner()
+        |> Accounts.insert_owner()
 
       {:error, :not_found} = Shops.update_shop(owner, Fixtures.shop())
     end

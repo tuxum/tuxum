@@ -1,13 +1,13 @@
 defmodule APIWeb.Schema.ShopQueryTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Identities, Fixtures}
+  alias Core.{Accounts, Fixtures}
 
   describe "querying a shop" do
     setup %{conn: conn} do
       params = %{owner: Fixtures.owner(), shop:  Fixtures.shop()}
       {:ok, %{owner: owner, shop: shop}} = Core.signup(params)
-      {:ok, token} = Identities.token_from_owner(owner)
+      {:ok, token} = Accounts.token_from_owner(owner)
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       %{conn: conn, owner: owner, shop: shop}

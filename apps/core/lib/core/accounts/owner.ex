@@ -1,8 +1,8 @@
-defmodule Core.Identities.Owner do
+defmodule Core.Accounts.Owner do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Identities.PasswordIdentity
+  alias Core.Accounts.PasswordIdentity
   alias Core.Shops.Shop
 
   schema "owners" do

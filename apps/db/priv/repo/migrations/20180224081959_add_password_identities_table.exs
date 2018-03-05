@@ -1,4 +1,4 @@
-defmodule DB.Repo.Migrations.AddPasswordIdentitiesTable do
+defmodule DB.Repo.Migrations.AddPasswordAccountsTable do
   use Ecto.Migration
 
   def change do

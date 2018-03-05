@@ -1,4 +1,4 @@
-defmodule Core.Identities do
+defmodule Core.Accounts do
   @moduledoc """
   Module provides functionality around owner identities.
   """
@@ -6,7 +6,7 @@ defmodule Core.Identities do
   import Ecto.Query
 
   alias Ecto.Multi
-  alias Core.Identities.{Owner, PasswordIdentity, Token}
+  alias Core.Accounts.{Owner, PasswordIdentity, Token}
 
   def find_owner(%{email: email}) do
     Owner

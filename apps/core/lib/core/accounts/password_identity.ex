@@ -1,8 +1,8 @@
-defmodule Core.Identities.PasswordIdentity do
+defmodule Core.Accounts.PasswordIdentity do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Identities.Owner
+  alias Core.Accounts.Owner
 
   schema "password_identities" do
     field :digest, :string

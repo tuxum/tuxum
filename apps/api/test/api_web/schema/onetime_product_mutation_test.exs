@@ -1,14 +1,14 @@
 defmodule APIWeb.Schema.OnetimeProductMutationTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Identities, Shops, Fixtures}
+  alias Core.{Accounts, Shops, Fixtures}
 
   describe "createOnetimeProduct mutation" do
     setup %{conn: conn} do
-      {:ok, owner} = Fixtures.owner() |> Identities.insert_owner()
+      {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
       {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
 
-      {:ok, token} = Identities.token_from_owner(owner)
+      {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
@@ -42,11 +42,11 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
   describe "updateOnetimeProduct mutation" do
     setup %{conn: conn} do
-      {:ok, owner} = Fixtures.owner() |> Identities.insert_owner()
+      {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
       {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
       {:ok, product} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
 
-      {:ok, token} = Identities.token_from_owner(owner)
+      {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 

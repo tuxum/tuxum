@@ -2,7 +2,7 @@ defmodule Core.Shops.Shop do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Identities.Owner
+  alias Core.Accounts.Owner
   alias Core.Shops.OnetimeProduct
 
   schema "shops" do

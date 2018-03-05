@@ -1,4 +1,4 @@
-defmodule Core.Identities.Token do
+defmodule Core.Accounts.Token do
   def to_owner(token) do
     token
     |> Joken.token
@@ -21,7 +21,7 @@ defmodule Core.Identities.Token do
   end
 
   defp claim_to_owner(%{"owner_id" => owner_id}) do
-    case Core.Identities.find_owner(%{id: owner_id}) do
+    case Core.Accounts.find_owner(%{id: owner_id}) do
       {:ok, owner} -> owner
       _ -> nil
     end

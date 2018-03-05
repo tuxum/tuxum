@@ -25,7 +25,7 @@ defmodule APIWeb.ContextPlug do
 
   defp build_auth_context(context, conn) do
     with ["Bearer " <> token | _] <- get_req_header(conn, "authorization"),
-         {:ok, owner} <- Core.Identities.owner_from_token(token) do
+         {:ok, owner} <- Core.Accounts.owner_from_token(token) do
       %{context | current_owner: owner}
     else
       _ -> context
