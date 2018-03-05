@@ -1,87 +1,87 @@
 defmodule Core.Identities do
   @moduledoc """
-  Module provides functionality around user identities.
+  Module provides functionality around owner identities.
   """
 
   import Ecto.Query
 
   alias Ecto.Multi
-  alias Core.Identities.{User, PasswordIdentity, Token}
+  alias Core.Identities.{Owner, PasswordIdentity, Token}
 
-  @spec find_user(map()) :: {:ok, User.t()} | {:error, :not_found}
-  def find_user(%{email: email}) do
-    User
+  @spec find_owner(map()) :: {:ok, Owner.t()} | {:error, :not_found}
+  def find_owner(%{email: email}) do
+    Owner
     |> where([u], u.email == ^email)
     |> DB.replica().one()
     |> case do
       nil -> {:error, :not_found}
-      user -> {:ok, user}
+      owner -> {:ok, owner}
     end
   end
 
-  def find_user(%{id: id}) do
-    User
+  def find_owner(%{id: id}) do
+    Owner
     |> DB.replica().get(id)
     |> case do
       nil -> {:error, :not_found}
-      user -> {:ok, user}
+      owner -> {:ok, owner}
     end
   end
 
-  @spec insert_user(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def insert_user(%{name: name, email: email, password: password}) do
+  @spec insert_owner(map()) :: {:ok, Owner.t()} | {:error, Ecto.Changeset.t()}
+  def insert_owner(%{name: name, email: email, password: password}) do
     repo = DB.primary()
-    user_changeset = %User{} |> User.changeset(%{name: name, email: email})
+    owner_changeset = %Owner{} |> Owner.changeset(%{name: name, email: email})
 
     Multi.new()
-    |> Multi.insert(:user, user_changeset)
-    |> Multi.run(:password_identity, fn %{user: user} ->
-      user
+    |> Multi.insert(:owner, owner_changeset)
+    |> Multi.run(:password_identity, fn %{owner: owner} ->
+      owner
       |> Ecto.build_assoc(:password_identity)
       |> PasswordIdentity.changeset(%{password: password})
       |> repo.insert()
     end)
     |> repo.transaction()
     |> case do
-      {:ok, %{user: user, password_identity: password_identity}} ->
-        {:ok, %User{user | password_identity: password_identity}}
+      {:ok, %{owner: owner, password_identity: password_identity}} ->
+        {:ok, %Owner{owner | password_identity: password_identity}}
       {:error, _, changeset, _} ->
         {:error, changeset}
     end
   end
 
-  @spec authenticate(String.t(), String.t()) :: {:ok, User.t()} | :error
+  @spec authenticate(String.t(), String.t()) :: {:ok, Owner.t()} | :error
   def authenticate(email, password) do
-    with {:ok, user} <- find_user(%{email: email}),
-         true <- correct_password?(user, password) do
-      {:ok, user}
+    with {:ok, owner} <- find_owner(%{email: email}),
+         true <- correct_password?(owner, password) do
+      {:ok, owner}
     else
       _ -> :error
     end
   end
 
-  @spec correct_password?(User.t(), String.t()) :: boolean()
-  def correct_password?(user, password) do
+  @spec correct_password?(Owner.t(), String.t()) :: boolean()
+  def correct_password?(owner, password) do
     repo = DB.replica()
 
-    case repo.preload(user, :password_identity) do
-      %User{password_identity: identity = %PasswordIdentity{}} ->
+    case repo.preload(owner, :password_identity) do
+      %Owner{password_identity: identity = %PasswordIdentity{}} ->
         Comeonin.Pbkdf2.checkpw(password, identity.digest)
       _ ->
         false
     end
   end
 
-  @spec user_from_token(Token.t()) :: {:ok, User.t()} | :error
-  def user_from_token(token) do
-    case Token.to_user(token) do
+  @spec owner_from_token(Token.t()) :: {:ok, Owner.t()} | :error
+  def owner_from_token(token) do
+    case Token.to_owner(token) do
       nil -> :error
-      user -> {:ok, user}
+      owner -> {:ok, owner}
     end
   end
 
-  @spec token_from_user(User.t()) :: {:ok, Token.t()}
-  def token_from_user(user) do
-    {:ok, Token.from_user(user)}
+  @spec token_from_owner(Owner.t()) :: {:ok, Token.t()}
+  def token_from_owner(owner) do
+    {:ok, Token.from_owner(owner)}
   end
 end

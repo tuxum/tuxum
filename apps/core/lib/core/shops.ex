@@ -7,37 +7,37 @@ defmodule Core.Shops do
   import Ecto.Query
 
   alias Core.Shops.{Shop, OnetimeProduct}
-  alias Core.Identities.{User}
+  alias Core.Identities.{Owner}
 
-  @spec find_shop(User.t()) :: {:ok, Shop.t()} | {:error, :not_found}
-  def find_shop(%User{id: id}) do
+  @spec find_shop(Owner.t()) :: {:ok, Shop.t()} | {:error, :not_found}
+  def find_shop(%Owner{id: id}) do
     Shop
-    |> where([s], s.user_id == ^id)
+    |> where([s], s.owner_id == ^id)
     |> DB.replica().one()
     |> case do
       nil ->
         {:error, :not_found}
-      user ->
-        {:ok, user}
+      owner ->
+        {:ok, owner}
     end
   end
 
-  @spec insert_shop(User.t(), map()) ::
+  @spec insert_shop(Owner.t(), map()) ::
     {:ok, Shop.t()} |
     {:error, Ecto.Changeset.t()}
-  def insert_shop(user = %User{}, attrs) do
-    user
+  def insert_shop(owner = %Owner{}, attrs) do
+    owner
     |> build_assoc(:shop)
     |> Shop.changeset(attrs)
     |> DB.primary().insert()
   end
 
-  @spec update_shop(User.t(), map()) ::
+  @spec update_shop(Owner.t(), map()) ::
     {:ok, Shop.t()} |
     {:error, Ecto.Changeset.t()} |
     {:error, :not_found}
-  def update_shop(user = %User{}, attrs) do
-    with {:ok, shop} <- find_shop(user) do
+  def update_shop(owner = %Owner{}, attrs) do
+    with {:ok, shop} <- find_shop(owner) do
       shop
       |> Shop.changeset(attrs)
       |> DB.primary().update()

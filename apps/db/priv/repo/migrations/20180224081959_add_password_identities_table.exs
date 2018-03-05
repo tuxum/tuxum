@@ -4,7 +4,7 @@ defmodule DB.Repo.Migrations.AddPasswordIdentitiesTable do
   def change do
     create table(:password_identities) do
       add :digest, :string, null: false
-      add :user_id, references(:users), null: false
+      add :owner_id, references(:owners), null: false
 
       timestamps()
     end

@@ -5,20 +5,20 @@ defmodule APIWeb.Schema.ShopQueryTest do
 
   describe "querying a shop" do
     setup %{conn: conn} do
-      {:ok, user} = Fixtures.user() |> Identities.insert_user()
-      {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
+      {:ok, owner} = Fixtures.owner() |> Identities.insert_owner()
+      {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
 
-      {:ok, token} = Identities.token_from_user(user)
+      {:ok, token} = Identities.token_from_owner(owner)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
-      %{conn: conn, user: user, shop: shop}
+      %{conn: conn, owner: owner, shop: shop}
     end
 
-    test "get shop of the user", %{conn: conn, shop: %{name: name}} do
+    test "get shop of the owner", %{conn: conn, shop: %{name: name}} do
       data = graphql_data(conn, """
         query {
-          user {
+          owner {
             shop {
               name
               onetime_products {
@@ -29,7 +29,7 @@ defmodule APIWeb.Schema.ShopQueryTest do
         }
       """)
 
-      assert %{"user" => %{"shop" => %{"name" => ^name}}} = data
+      assert %{"owner" => %{"shop" => %{"name" => ^name}}} = data
     end
   end
 end

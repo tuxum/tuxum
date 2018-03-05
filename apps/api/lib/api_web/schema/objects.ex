@@ -1,7 +1,7 @@
 defmodule APIWeb.Schema.Objects do
   use Absinthe.Schema.Notation
 
-  object :user do
+  object :owner do
     field :id, non_null(:id)
     field :name, non_null(:string)
     field :email, non_null(:string)

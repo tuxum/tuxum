@@ -11,9 +11,9 @@ defmodule APIWeb.ShopResolver do
   end
 
   def create_shop(%{input: params = %{name: _}}, resolution) do
-    %{current_user: current_user} = resolution.context
+    %{current_owner: current_owner} = resolution.context
 
-    case Shops.insert_shop(current_user, params) do
+    case Shops.insert_shop(current_owner, params) do
       {:ok, shop} ->
         {:ok, %{shop: shop}}
       {:error, _} ->
@@ -22,9 +22,9 @@ defmodule APIWeb.ShopResolver do
   end
 
   def update_shop(%{input: params = %{name: _}}, resolution) do
-    %{current_user: current_user} = resolution.context
+    %{current_owner: current_owner} = resolution.context
 
-    case Shops.update_shop(current_user, params) do
+    case Shops.update_shop(current_owner, params) do
       {:ok, shop} ->
         {:ok, %{shop: shop}}
       {:error, :not_found} ->

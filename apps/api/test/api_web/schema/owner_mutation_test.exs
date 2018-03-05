@@ -1,14 +1,14 @@
-defmodule APIWeb.Schema.UserMutationTest do
+defmodule APIWeb.Schema.OwnerMutationTest do
   use APIWeb.ConnCase, async: true
 
   alias Core.{Identities, Fixtures}
 
   describe "authenticate mutation" do
     setup do
-      params = Fixtures.user()
-      {:ok, user} = Identities.insert_user(params)
+      params = Fixtures.owner()
+      {:ok, owner} = Identities.insert_owner(params)
 
-      %{user: user, params: params}
+      %{owner: owner, params: params}
     end
 
     test "returns token if email/pass are correct", %{conn: conn, params: params} do
@@ -40,16 +40,16 @@ defmodule APIWeb.Schema.UserMutationTest do
     end
   end
 
-  describe "createUser mutation" do
+  describe "createOwner mutation" do
     setup do
-      %{params: Fixtures.user()}
+      %{params: Fixtures.owner()}
     end
 
-    test "inserts new user", %{conn: conn, params: params = %{name: name}} do
+    test "inserts new owner", %{conn: conn, params: params = %{name: name}} do
       query = """
-        mutation ($input: CreateUserInput!) {
-          createUser(input: $input) {
-            user {
+        mutation ($input: CreateOwnerInput!) {
+          createOwner(input: $input) {
+            owner {
               name
             }
           }
@@ -58,18 +58,18 @@ defmodule APIWeb.Schema.UserMutationTest do
       variables = %{input: params}
 
       data = graphql_data(conn, query, variables)
-        |> Map.get("createUser")
-        |> Map.get("user")
+        |> Map.get("createOwner")
+        |> Map.get("owner")
 
       assert %{"name" => ^name} = data
-      assert {:ok, _user} = Identities.find_user(%{email: params.email})
+      assert {:ok, _owner} = Identities.find_owner(%{email: params.email})
     end
 
     test "errors when invalid data given", %{conn: conn, params: params} do
       query = """
-        mutation ($input: CreateUserInput!) {
-          createUser(input: $input) {
-            user {
+        mutation ($input: CreateOwnerInput!) {
+          createOwner(input: $input) {
+            owner {
               name
             }
           }
@@ -80,7 +80,7 @@ defmodule APIWeb.Schema.UserMutationTest do
       [error | _] = graphql_errors(conn, query, variables)
 
       assert %{"message" => _} = error
-      assert {:error, :not_found} = Identities.find_user(%{email: params.email})
+      assert {:error, :not_found} = Identities.find_owner(%{email: params.email})
     end
   end
 end

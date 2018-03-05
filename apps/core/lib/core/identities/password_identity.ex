@@ -2,7 +2,7 @@ defmodule Core.Identities.PasswordIdentity do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Identities.User
+  alias Core.Identities.Owner
 
   @type t :: %__MODULE__{}
 
@@ -10,7 +10,7 @@ defmodule Core.Identities.PasswordIdentity do
     field :digest, :string
     field :password, :string, virtual: true
 
-    belongs_to :user, User
+    belongs_to :owner, Owner
 
     timestamps()
   end
