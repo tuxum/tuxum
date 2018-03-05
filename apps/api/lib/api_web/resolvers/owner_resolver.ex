@@ -1,10 +1,10 @@
 defmodule APIWeb.OwnerResolver do
   alias Core.Identities
 
-  def create_owner(%{input: params = %{name: _, email: _, password: _}}, _resolution) do
-    case Identities.insert_owner(params) do
-      {:ok, owner} ->
-        {:ok, %{owner: owner}}
+  def signup(%{input: input}, _resolution) do
+    case Core.signup(input) do
+      {:ok, changes} ->
+        {:ok, changes}
       {:error, _} ->
         {:error, "Something bad happen"} # TODO: Return good error messages
     end

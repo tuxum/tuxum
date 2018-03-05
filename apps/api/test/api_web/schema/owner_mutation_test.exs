@@ -39,48 +39,4 @@ defmodule APIWeb.Schema.OwnerMutationTest do
       assert %{"message" => "Unauthorized"} = error
     end
   end
-
-  describe "createOwner mutation" do
-    setup do
-      %{params: Fixtures.owner()}
-    end
-
-    test "inserts new owner", %{conn: conn, params: params = %{name: name}} do
-      query = """
-        mutation ($input: CreateOwnerInput!) {
-          createOwner(input: $input) {
-            owner {
-              name
-            }
-          }
-        }
-      """
-      variables = %{input: params}
-
-      data = graphql_data(conn, query, variables)
-        |> Map.get("createOwner")
-        |> Map.get("owner")
-
-      assert %{"name" => ^name} = data
-      assert {:ok, _owner} = Identities.find_owner(%{email: params.email})
-    end
-
-    test "errors when invalid data given", %{conn: conn, params: params} do
-      query = """
-        mutation ($input: CreateOwnerInput!) {
-          createOwner(input: $input) {
-            owner {
-              name
-            }
-          }
-        }
-      """
-      variables = %{input: %{params | name: ""}}
-
-      [error | _] = graphql_errors(conn, query, variables)
-
-      assert %{"message" => _} = error
-      assert {:error, :not_found} = Identities.find_owner(%{email: params.email})
-    end
-  end
 end

@@ -20,10 +20,10 @@ defmodule APIWeb.Schema.OwnerTypes do
       resolve &APIWeb.OwnerResolver.authenticate/2
     end
 
-    field :create_owner, :create_owner_payload do
-      arg :input, non_null(:create_owner_input)
+    field :signup, :signup_payload do
+      arg :input, non_null(:signup_input)
 
-      resolve &APIWeb.OwnerResolver.create_owner/2
+      resolve &APIWeb.OwnerResolver.signup/2
     end
   end
 
@@ -36,13 +36,22 @@ defmodule APIWeb.Schema.OwnerTypes do
     field :token, :string
   end
 
-  input_object :create_owner_input do
+  input_object :signup_input do
+    field :owner, non_null(:signup_input_owner)
+    field :shop, non_null(:signup_input_shop)
+  end
+
+  input_object :signup_input_owner do
     field :name, non_null(:string)
     field :email, non_null(:string)
     field :password, non_null(:string)
   end
 
-  object :create_owner_payload do
+  input_object :signup_input_shop do
+    field :name, non_null(:string)
+  end
+
+  object :signup_payload do
     field :owner, non_null(:owner)
   end
 end
