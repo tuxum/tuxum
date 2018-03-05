@@ -8,7 +8,6 @@ defmodule Core.Identities do
   alias Ecto.Multi
   alias Core.Identities.{Owner, PasswordIdentity, Token}
 
-  @spec find_owner(map()) :: {:ok, Owner.t()} | {:error, :not_found}
   def find_owner(%{email: email}) do
     Owner
     |> where([u], u.email == ^email)
@@ -28,7 +27,6 @@ defmodule Core.Identities do
     end
   end
 
-  @spec insert_owner(map()) :: {:ok, Owner.t()} | {:error, Ecto.Changeset.t()}
   def insert_owner(%{name: name, email: email, password: password}) do
     repo = DB.primary()
     owner_changeset = %Owner{} |> Owner.changeset(%{name: name, email: email})
@@ -50,7 +48,6 @@ defmodule Core.Identities do
     end
   end
 
-  @spec authenticate(String.t(), String.t()) :: {:ok, Owner.t()} | :error
   def authenticate(email, password) do
     with {:ok, owner} <- find_owner(%{email: email}),
          true <- correct_password?(owner, password) do
@@ -60,7 +57,6 @@ defmodule Core.Identities do
     end
   end
 
-  @spec correct_password?(Owner.t(), String.t()) :: boolean()
   def correct_password?(owner, password) do
     repo = DB.replica()
 
@@ -72,7 +68,6 @@ defmodule Core.Identities do
     end
   end
 
-  @spec owner_from_token(Token.t()) :: {:ok, Owner.t()} | :error
   def owner_from_token(token) do
     case Token.to_owner(token) do
       nil -> :error
@@ -80,7 +75,6 @@ defmodule Core.Identities do
     end
   end
 
-  @spec token_from_owner(Owner.t()) :: {:ok, Token.t()}
   def token_from_owner(owner) do
     {:ok, Token.from_owner(owner)}
   end

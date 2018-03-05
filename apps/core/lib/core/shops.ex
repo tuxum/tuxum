@@ -9,7 +9,6 @@ defmodule Core.Shops do
   alias Core.Shops.{Shop, OnetimeProduct}
   alias Core.Identities.{Owner}
 
-  @spec find_shop(Owner.t()) :: {:ok, Shop.t()} | {:error, :not_found}
   def find_shop(%Owner{id: id}) do
     Shop
     |> where([s], s.owner_id == ^id)
@@ -22,9 +21,6 @@ defmodule Core.Shops do
     end
   end
 
-  @spec insert_shop(Owner.t(), map()) ::
-    {:ok, Shop.t()} |
-    {:error, Ecto.Changeset.t()}
   def insert_shop(owner = %Owner{}, attrs) do
     owner
     |> build_assoc(:shop)
@@ -32,10 +28,6 @@ defmodule Core.Shops do
     |> DB.primary().insert()
   end
 
-  @spec update_shop(Owner.t(), map()) ::
-    {:ok, Shop.t()} |
-    {:error, Ecto.Changeset.t()} |
-    {:error, :not_found}
   def update_shop(owner = %Owner{}, attrs) do
     with {:ok, shop} <- find_shop(owner) do
       shop
@@ -46,9 +38,6 @@ defmodule Core.Shops do
     end
   end
 
-  @spec find_onetime_product(Shop.t(), map()) ::
-    {:ok, OnetimeProduct.t()} |
-    {:error, :not_found}
   def find_onetime_product(shop = %Shop{}, %{id: id}) do
     shop
     |> assoc(:onetime_products)
@@ -62,7 +51,6 @@ defmodule Core.Shops do
     end
   end
 
-  @spec list_onetime_products(Shop.t(), map()) :: {:ok, list()}
   def list_onetime_products(shop, _opts \\ %{}) do
     products = shop
       |> assoc(:onetime_products)
@@ -71,9 +59,6 @@ defmodule Core.Shops do
     {:ok, products}
   end
 
-  @spec insert_onetime_product(Shop.t(), map()) ::
-    {:ok, OnetimeProduct.t()} |
-    {:error, [String.t()]}
   def insert_onetime_product(shop = %Shop{}, attrs) do
     case do_insert_onetime_product(shop, attrs) do
       {:ok, product} ->
@@ -92,9 +77,6 @@ defmodule Core.Shops do
     |> DB.primary().insert()
   end
 
-  @spec update_onetime_product(Shop.t(), number(), map()) ::
-    {:ok, OnetimeProduct.t()} |
-    {:error, [String.t()]}
   def update_onetime_product(shop = %Shop{}, product_id, attrs) do
     with {:ok, product} <- find_onetime_product(shop, %{id: product_id}),
          {:ok, product} <- do_update_onetime_product(product, attrs) do

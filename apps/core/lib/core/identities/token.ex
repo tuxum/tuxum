@@ -1,7 +1,4 @@
 defmodule Core.Identities.Token do
-
-  @type t :: String.t()
-
   def to_owner(token) do
     token
     |> Joken.token

@@ -4,8 +4,6 @@ defmodule Core.Shops.OnetimeProduct do
 
   alias Core.Shops.Shop
 
-  @type t :: %__MODULE__{}
-
   schema "onetime_products" do
     field :name, :string
     field :is_public, :boolean

@@ -5,8 +5,6 @@ defmodule Core.Shops.Shop do
   alias Core.Identities.Owner
   alias Core.Shops.OnetimeProduct
 
-  @type t :: %__MODULE__{}
-
   schema "shops" do
     field :name, :string
 
