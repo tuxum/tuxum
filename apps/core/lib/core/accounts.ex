@@ -36,8 +36,7 @@ defmodule Core.Accounts do
     |> Multi.run(:password_identity, fn %{owner: owner} ->
       owner
       |> Ecto.build_assoc(:password_identity)
-      |> PasswordIdentity.changeset(%{password: password})
-      |> repo.insert()
+      |> PasswordIdentity.insert(%{password: password})
     end)
     |> repo.transaction()
     |> case do

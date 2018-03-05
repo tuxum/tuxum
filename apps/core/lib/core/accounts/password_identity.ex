@@ -29,4 +29,16 @@ defmodule Core.Accounts.PasswordIdentity do
         changeset |> put_change(:digest, Comeonin.Pbkdf2.hashpwsalt(password))
     end
   end
+
+  def insert(identity, attrs) do
+    identity
+    |> changeset(attrs)
+    |> DB.primary().insert()
+  end
+
+  def update(identity, attrs) do
+    identity
+    |> changeset(attrs)
+    |> DB.primary().update()
+  end
 end

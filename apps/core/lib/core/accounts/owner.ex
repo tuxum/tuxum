@@ -29,4 +29,16 @@ defmodule Core.Accounts.Owner do
   defp downcase_email(changeset) do
     update_change(changeset, :email, &String.downcase/1)
   end
+
+  def insert(owner, attrs) do
+    owner
+    |> changeset(attrs)
+    |> DB.primary().insert()
+  end
+
+  def update(owner, attrs) do
+    owner
+    |> changeset(attrs)
+    |> DB.primary().update()
+  end
 end

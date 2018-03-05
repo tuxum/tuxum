@@ -24,15 +24,12 @@ defmodule Core.Shops do
   def insert_shop(owner = %Owner{}, attrs) do
     owner
     |> build_assoc(:shop)
-    |> Shop.changeset(attrs)
-    |> DB.primary().insert()
+    |> Shop.insert(attrs)
   end
 
   def update_shop(owner = %Owner{}, attrs) do
     with {:ok, shop} <- find_shop(owner) do
-      shop
-      |> Shop.changeset(attrs)
-      |> DB.primary().update()
+      shop |> Shop.update(attrs)
     else
       error -> error
     end
@@ -60,7 +57,12 @@ defmodule Core.Shops do
   end
 
   def insert_onetime_product(shop = %Shop{}, attrs) do
-    case do_insert_onetime_product(shop, attrs) do
+    attrs = transform_money(attrs)
+
+    shop
+    |> build_assoc(:onetime_products)
+    |> OnetimeProduct.insert(attrs)
+    |> case do
       {:ok, product} ->
         {:ok, product}
       {:error, _changeset} ->
@@ -68,18 +70,9 @@ defmodule Core.Shops do
     end
   end
 
-  defp do_insert_onetime_product(shop = %Shop{}, attrs) do
-    attrs = transform_money(attrs)
-
-    shop
-    |> build_assoc(:onetime_products)
-    |> OnetimeProduct.changeset(attrs)
-    |> DB.primary().insert()
-  end
-
   def update_onetime_product(shop = %Shop{}, product_id, attrs) do
     with {:ok, product} <- find_onetime_product(shop, %{id: product_id}),
-         {:ok, product} <- do_update_onetime_product(product, attrs) do
+         {:ok, product} <- OnetimeProduct.update(product, attrs) do
       {:ok, product}
     else
       {:error, _} ->
@@ -87,14 +80,6 @@ defmodule Core.Shops do
       _ ->
         {:error, "Not Found"}
     end
-  end
-
-  defp do_update_onetime_product(product, attrs) do
-    attrs = transform_money(attrs)
-
-    product
-    |> OnetimeProduct.changeset(attrs)
-    |> DB.primary().update()
   end
 
   defp transform_money(attrs) do

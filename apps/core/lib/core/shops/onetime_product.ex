@@ -31,4 +31,16 @@ defmodule Core.Shops.OnetimeProduct do
   defp zero?(decimal) do
     Decimal.new(0) |> Decimal.equal?(decimal)
   end
+
+  def insert(onetime_product, attrs) do
+    onetime_product
+    |> changeset(attrs)
+    |> DB.primary().insert()
+  end
+
+  def update(onetime_product, attrs) do
+    onetime_product
+    |> changeset(attrs)
+    |> DB.primary().update()
+  end
 end
