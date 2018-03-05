@@ -62,10 +62,28 @@ defmodule Core.Shops do
     end
   end
 
+  @spec list_onetime_products(Shop.t(), map()) :: {:ok, list()}
+  def list_onetime_products(shop, _opts \\ %{}) do
+    products = shop
+      |> assoc(:onetime_products)
+      |> DB.replica().all()
+
+    {:ok, products}
+  end
+
   @spec insert_onetime_product(Shop.t(), map()) ::
     {:ok, OnetimeProduct.t()} |
-    {:error, Ecto.Changeset.t()}
+    {:error, [String.t()]}
   def insert_onetime_product(shop = %Shop{}, attrs) do
+    case do_insert_onetime_product(shop, attrs) do
+      {:ok, product} ->
+        {:ok, product}
+      {:error, _changeset} ->
+        {:error, ["Something went wrong"]}
+    end
+  end
+
+  defp do_insert_onetime_product(shop = %Shop{}, attrs) do
     attrs = transform_money(attrs)
 
     shop
@@ -74,10 +92,22 @@ defmodule Core.Shops do
     |> DB.primary().insert()
   end
 
-  @spec update_onetime_product(OnetimeProduct.t(), map()) ::
+  @spec update_onetime_product(Shop.t(), number(), map()) ::
     {:ok, OnetimeProduct.t()} |
-    {:error, Ecto.Changeset.t()}
-  def update_onetime_product(product = %OnetimeProduct{}, attrs) do
+    {:error, [String.t()]}
+  def update_onetime_product(shop = %Shop{}, product_id, attrs) do
+    with {:ok, product} <- find_onetime_product(shop, %{id: product_id}),
+         {:ok, product} <- do_update_onetime_product(product, attrs) do
+      {:ok, product}
+    else
+      {:error, _} ->
+        {:error, "Something bad happen"} # TODO: Return good error messages
+      _ ->
+        {:error, "Not Found"}
+    end
+  end
+
+  defp do_update_onetime_product(product, attrs) do
     attrs = transform_money(attrs)
 
     product

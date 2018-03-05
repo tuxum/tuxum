@@ -21,6 +21,9 @@ defmodule APIWeb.Schema.ShopQueryTest do
           user {
             shop {
               name
+              onetime_products {
+                id
+              }
             }
           }
         }
