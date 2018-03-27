@@ -18,25 +18,40 @@ defmodule Core.Shops.OnetimeProduct do
   def insert_changeset(onetime_product, attrs \\ %{}) do
     onetime_product
     |> cast(attrs, ~w[name is_public price shipping_fee])
-    |> validate_required(~w[name is_public price shop_id]a)
-    |> validate_change(:price, &price_should_be_positive/2)
+    |> validate_required(~w[name is_public price]a)
     |> assoc_constraint(:shop)
     |> set_default_shipping_fee()
+    |> price_should_be_positive()
+    |> currencies_should_be_same()
   end
 
   def update_changeset(onetime_product, attrs \\ %{}) do
     onetime_product
     |> cast(attrs, ~w[name is_public price shipping_fee])
     |> validate_required(~w[name is_public price]a)
-    |> validate_change(:price, &price_should_be_positive/2)
     |> assoc_constraint(:shop)
+    |> price_should_be_positive()
+    |> currencies_should_be_same()
   end
 
-  defp price_should_be_positive(:price, %{amount: amount}) do
-    if Decimal.new(0) |> Decimal.equal?(amount) do
-      [price: "must be greater then 0"]
+  defp price_should_be_positive(changeset) do
+    validate_change(changeset, :price, fn :price, %{amount: amount} ->
+      if Decimal.new(0) |> Decimal.equal?(amount) do
+        [price: "must be greater then 0"]
+      else
+        []
+      end
+    end)
+  end
+
+  defp currencies_should_be_same(changeset) do
+    {_, price} = fetch_field(changeset, :price)
+    {_, shipping_fee} = fetch_field(changeset, :shipping_fee)
+
+    if price.currency == shipping_fee.currency do
+      changeset
     else
-      []
+      add_error(changeset, :price, "price and shipping_fee must have the same currency")
     end
   end
 
