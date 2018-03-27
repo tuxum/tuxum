@@ -6,7 +6,6 @@ defmodule APIWeb.Schema.ShopTypes do
       middleware APIWeb.AuthMiddleware
 
       arg :input, non_null(:update_shop_input)
-
       resolve &APIWeb.ShopResolver.update_shop/2
     end
   end

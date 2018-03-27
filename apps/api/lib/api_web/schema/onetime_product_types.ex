@@ -6,7 +6,6 @@ defmodule APIWeb.Schema.OnetimeProductTypes do
       middleware APIWeb.AuthMiddleware
 
       arg :input, non_null(:create_onetime_product_input)
-
       resolve &APIWeb.OnetimeProductResolver.create_onetime_product/2
     end
 
@@ -14,7 +13,6 @@ defmodule APIWeb.Schema.OnetimeProductTypes do
       middleware APIWeb.AuthMiddleware
 
       arg :input, non_null(:update_onetime_product_input)
-
       resolve &APIWeb.OnetimeProductResolver.update_onetime_product/2
     end
   end

@@ -16,13 +16,11 @@ defmodule APIWeb.Schema.OwnerTypes do
   object :owner_mutations do
     field :authenticate, :authenticate_payload do
       arg :input, non_null(:authenticate_input)
-
       resolve &APIWeb.OwnerResolver.authenticate/2
     end
 
     field :signup, :signup_payload do
       arg :input, non_null(:signup_input)
-
       resolve &APIWeb.OwnerResolver.signup/2
     end
   end
