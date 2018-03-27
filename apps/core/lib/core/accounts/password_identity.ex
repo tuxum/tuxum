@@ -1,14 +1,14 @@
-defmodule Core.Identities.PasswordIdentity do
+defmodule Core.Accounts.PasswordIdentity do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Identities.User
+  alias Core.Accounts.Owner
 
   schema "password_identities" do
     field :digest, :string
     field :password, :string, virtual: true
 
-    belongs_to :user, User
+    belongs_to :owner, Owner
 
     timestamps()
   end
@@ -28,5 +28,17 @@ defmodule Core.Identities.PasswordIdentity do
       password ->
         changeset |> put_change(:digest, Comeonin.Pbkdf2.hashpwsalt(password))
     end
+  end
+
+  def insert(identity, attrs) do
+    identity
+    |> changeset(attrs)
+    |> DB.primary().insert()
+  end
+
+  def update(identity, attrs) do
+    identity
+    |> changeset(attrs)
+    |> DB.primary().update()
   end
 end

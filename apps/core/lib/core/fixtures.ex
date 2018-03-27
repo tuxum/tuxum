@@ -5,7 +5,7 @@ if Mix.env() == :test do
     Available only :test environment
     """
 
-    def user do
+    def owner do
       %{
         name: Faker.Name.name(),
         email: Faker.Internet.email(),

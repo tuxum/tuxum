@@ -1,53 +1,27 @@
 defmodule APIWeb.Schema.ShopMutationTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Identities, Shops,  Fixtures}
-
-  describe "createShop mutation" do
-    setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
-
-      {:ok, token} = Identities.token_from_user(user)
-      conn = conn
-        |> put_req_header("authorization", "Bearer #{token}")
-
-      %{conn: conn, user: user, params: Fixtures.shop()}
-    end
-
-    test "inserts new shop", %{conn: conn, user: user, params: params} do
-      query = """
-        mutation ($input: CreateShopInput!) {
-          createShop(input: $input) {
-            name
-          }
-        }
-      """
-      variables = %{input: params}
-
-      data = graphql_data(conn, query, variables)
-
-      assert %{"createShop" => %{"name" => _}} = data
-      assert Shops.find_shop(%{user_id: user.id})
-    end
-  end
+  alias Core.{Accounts, Shops,  Fixtures}
 
   describe "updateShop mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
-      {:ok, _shop} = Shops.insert_shop(user, Fixtures.shop())
+      {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
+      {:ok, _shop} = Shops.insert_shop(owner, Fixtures.shop())
 
-      {:ok, token} = Identities.token_from_user(user)
+      {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
-      %{conn: conn, user: user, params: Fixtures.shop()}
+      %{conn: conn, owner: owner, params: Fixtures.shop()}
     end
 
-    test "updates shop", %{conn: conn, user: user, params: params} do
+    test "updates shop", %{conn: conn, owner: owner, params: params} do
       query = """
         mutation ($input: UpdateShopInput!) {
           updateShop(input: $input) {
-            name
+            shop {
+              name
+            }
           }
         }
       """
@@ -56,8 +30,8 @@ defmodule APIWeb.Schema.ShopMutationTest do
       data = graphql_data(conn, query, variables)
 
       %{name: name} = params
-      assert %{"updateShop" => %{"name" => ^name}} = data
-      assert %{name: ^name} = Shops.find_shop(%{user_id: user.id})
+      assert %{"updateShop" => %{"shop" => %{"name" => ^name}}} = data
+      assert {:ok, %{name: ^name}} = Shops.find_shop(owner)
     end
   end
 end

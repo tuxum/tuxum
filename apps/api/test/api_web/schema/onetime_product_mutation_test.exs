@@ -1,47 +1,52 @@
 defmodule APIWeb.Schema.OnetimeProductMutationTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Identities, Shops,  Fixtures}
+  alias Core.{Accounts, Shops, Fixtures}
 
   describe "createOnetimeProduct mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
-      {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
+      {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
+      {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
 
-      {:ok, token} = Identities.token_from_user(user)
+      {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
       params = Fixtures.onetime_product()
 
-      %{conn: conn, user: user, shop: shop, params: params}
+      %{conn: conn, owner: owner, shop: shop, params: params}
     end
 
     test "inserts new onetime product", %{conn: conn, shop: shop, params: params} do
       query = """
-        mutation ($shopId: ID!, $input: CreateOnetimeProductInput!) {
-          createOnetimeProduct(shopId: $shopId, input: $input) {
-            id
-            name
+        mutation ($input: CreateOnetimeProductInput!) {
+          createOnetimeProduct(input: $input) {
+            onetimeProduct {
+              id
+              name
+            }
           }
         }
       """
-      variables = %{shopId: shop.id, input: (params)}
+      variables = %{input: params}
 
       data = graphql_data(conn, query, variables)
+        |> Map.get("createOnetimeProduct")
+        |> Map.get("onetimeProduct")
 
-      assert %{"createOnetimeProduct" => %{"id" => id, "name" => _}} = data
-      assert Shops.find_onetime_product(shop, %{id: id})
+      %{name: name} = params
+      assert %{"id" => id, "name" => ^name} = data
+      assert {:ok, _product} = Shops.find_onetime_product(shop, %{id: id})
     end
   end
 
   describe "updateOnetimeProduct mutation" do
     setup %{conn: conn} do
-      {:ok, %{user: user}} = Fixtures.user() |> Identities.insert_user()
-      {:ok, shop} = Shops.insert_shop(user, Fixtures.shop())
+      {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
+      {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
       {:ok, product} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
 
-      {:ok, token} = Identities.token_from_user(user)
+      {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn
         |> put_req_header("authorization", "Bearer #{token}")
 
@@ -50,19 +55,23 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
 
     test "updates onetime product", %{conn: conn, shop: shop, product: product, params: params} do
       query = """
-        mutation ($productId: ID!, $input: UpdateOnetimeProductInput!) {
-          updateOnetimeProduct(productId: $productId, input: $input) {
-            id
-            name
+        mutation ($input: UpdateOnetimeProductInput!) {
+          updateOnetimeProduct(input: $input) {
+            onetimeProduct {
+              id
+              name
+            }
           }
         }
       """
-      variables = %{productId: product.id, input: params}
+      variables = %{input: Map.put(params, :onetime_product_id, product.id)}
 
       data = graphql_data(conn, query, variables)
+        |> Map.get("updateOnetimeProduct")
+        |> Map.get("onetimeProduct")
 
       %{name: name} = params
-      assert %{"updateOnetimeProduct" => %{"name" => ^name}} = data
+      assert %{"name" => ^name} = data
       assert {:ok, %{name: ^name}} = Shops.find_onetime_product(shop, %{id: product.id})
     end
   end

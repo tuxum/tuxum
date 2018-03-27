@@ -1,79 +1,64 @@
 defmodule Core.ShopsTest do
   use Core.DataCase, async: true
 
-  alias Core.{Identities, Shops, Fixtures}
+  alias Core.{Accounts, Shops, Fixtures}
 
-  @params Fixtures.shop()
-
-  def insert_user(_) do
-    Fixtures.user() |> Identities.insert_user()
+  def insert_owner(_) do
+    {:ok, owner} = Accounts.insert_owner(Fixtures.owner())
+    %{owner: owner}
   end
 
-  def insert_shop(%{user: user}) do
-    {:ok, shop} = Shops.insert_shop(user, @params)
-
+  def insert_shop(%{owner: owner}) do
+    {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
     %{shop: shop}
   end
 
   describe "find_shop/1" do
-    setup [:insert_user, :insert_shop]
+    setup [:insert_owner, :insert_shop]
 
-    test "finds a shop by id", %{shop: shop} do
-      assert Shops.find_shop(%{id: shop.id})
-    end
-
-    test "finds a shop by user id", %{user: user} do
-      assert Shops.find_shop(%{user_id: user.id})
+    test "finds a shop by owner", %{owner: owner} do
+      assert Shops.find_shop(owner)
     end
   end
 
   describe "insert_shop/2" do
-    setup [:insert_user]
+    setup [:insert_owner]
 
-    test "inserts a shop", %{user: user} do
-      {:ok, shop} = Shops.insert_shop(user, @params)
+    test "inserts a shop", %{owner: owner} do
+      params = Fixtures.shop()
+      {:ok, shop} = Shops.insert_shop(owner, params)
 
-      assert shop.name == @params.name
+      assert shop.name == params.name
     end
 
-    test "requires a name", %{user: user} do
-      params = %{@params | name: ""}
+    test "requires a name", %{owner: owner} do
+      params = Fixtures.shop() |> Map.put(:name, "")
 
-      assert {:error, _} = Shops.insert_shop(user, params)
+      assert {:error, _} = Shops.insert_shop(owner, params)
     end
 
-    test "cannot insert twice", %{user: user} do
-      assert {:ok, _shop} = Shops.insert_shop(user, @params)
-      assert {:error, _} = Shops.insert_shop(user, @params)
+    test "cannot insert twice", %{owner: owner} do
+      params = Fixtures.shop()
+
+      assert {:ok, _shop} = Shops.insert_shop(owner, params)
+      assert {:error, _} = Shops.insert_shop(owner, params)
     end
   end
 
   describe "update_shop/2" do
-    setup [:insert_user, :insert_shop]
+    setup [:insert_owner, :insert_shop]
 
-    test "updates the user's shop", %{user: user} do
-      {:ok, shop} = Shops.update_shop(user, %{name: "New Name"})
+    test "updates the owner's shop", %{owner: owner} do
+      {:ok, shop} = Shops.update_shop(owner, %{name: "New Name"})
 
       assert shop.name == "New Name"
     end
 
-    test "returns error if the user doesn't have shop" do
-      {:ok, %{user: user}} = Fixtures.user()
-        |> Identities.insert_user()
+    test "returns error if the owner doesn't have shop" do
+      {:ok, owner} = Fixtures.owner()
+        |> Accounts.insert_owner()
 
-      {:error, :not_found} = Shops.update_shop(user, Fixtures.shop())
-    end
-  end
-
-  describe "insert_onetime_product/2" do
-    setup [:insert_user, :insert_shop]
-
-    test "inserts a onetime product", %{shop: shop} do
-      params = Fixtures.onetime_product()
-      {:ok, product} = Shops.insert_onetime_product(shop, params)
-
-      assert product.name == params.name
-      assert product.is_public == params.is_public
+      {:error, :not_found} = Shops.update_shop(owner, Fixtures.shop())
     end
   end
 end

@@ -1,11 +1,11 @@
-defmodule Core.Identities.User do
+defmodule Core.Accounts.Owner do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Identities.PasswordIdentity
+  alias Core.Accounts.PasswordIdentity
   alias Core.Shops.Shop
 
-  schema "users" do
+  schema "owners" do
     field :name, :string
     field :email, :string
 
@@ -17,16 +17,28 @@ defmodule Core.Identities.User do
 
   @email_regex ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/
 
-  def changeset(user, attrs \\ %{}) do
-    user
+  def changeset(owner, attrs \\ %{}) do
+    owner
     |> cast(attrs, ~w[name email]a)
     |> downcase_email()
     |> validate_required(~w[name email]a)
     |> validate_format(:email, @email_regex)
-    |> unique_constraint(:email, name: :users_email_index)
+    |> unique_constraint(:email, name: :owners_email_index)
   end
 
   defp downcase_email(changeset) do
     update_change(changeset, :email, &String.downcase/1)
+  end
+
+  def insert(owner, attrs) do
+    owner
+    |> changeset(attrs)
+    |> DB.primary().insert()
+  end
+
+  def update(owner, attrs) do
+    owner
+    |> changeset(attrs)
+    |> DB.primary().update()
   end
 end

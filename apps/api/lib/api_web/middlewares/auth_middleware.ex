@@ -4,7 +4,7 @@ defmodule APIWeb.AuthMiddleware do
   @impl Absinthe.Middleware
   def call(resolution, _config) do
     case resolution.context do
-      %{current_user: nil} ->
+      %{current_owner: nil} ->
         resolution
         |> Absinthe.Resolution.put_result({:error, "unauthorized"})
       _ ->

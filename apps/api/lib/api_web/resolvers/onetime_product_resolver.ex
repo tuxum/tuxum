@@ -1,36 +1,36 @@
 defmodule APIWeb.OnetimeProductResolver do
-  alias Core.Shops
 
-  def find_onetime_product(shop, %{onetime_product_id: id}, _resolution) do
+  alias Core.Shops
+  alias Core.Shops.Shop
+
+  def find_onetime_product(shop = %Shop{}, %{onetime_product_id: id}, _resolution) do
     Shops.find_onetime_product(shop, %{id: id})
   end
 
-  def create_onetime_product(%{shop_id: shop_id, input: params}, resolution) do
-    %{current_user: current_user} = resolution.context
+  def list_onetime_products(shop = %Shop{}, _args, _resolution) do
+    Shops.list_onetime_products(shop)
+  end
 
-    with shop when shop != nil <- Shops.find_shop(%{user_id: current_user.id}),
-         {:ok, product} <- Shops.insert_onetime_product(shop, params) do
-      {:ok, product}
-    else
-      {:error, _} ->
-        {:error, "Something bad happen"} # TODO: Return good error messages
-      _ ->
-        {:error, "Not Found"}
+  def create_onetime_product(%{input: params}, resolution) do
+    %{current_shop: shop} = resolution.context
+
+    case Shops.insert_onetime_product(shop, params) do
+      {:ok, product} ->
+        {:ok, %{onetime_product: product}}
+      error ->
+        error
     end
   end
 
-  def update_onetime_product(%{product_id: product_id, input: params}, resolution) do
-    %{current_user: current_user} = resolution.context
+  def update_onetime_product(%{input: params}, resolution) do
+    %{current_shop: shop} = resolution.context
+    {product_id, params} = Map.pop(params, :onetime_product_id)
 
-    with shop when shop != nil <- Shops.find_shop(%{user_id: current_user.id}),
-         {:ok, product} <- Shops.find_onetime_product(shop, %{id: product_id}),
-         {:ok, product} <- Shops.update_onetime_product(product, params) do
-      {:ok, product}
-    else
-      {:error, _} ->
-        {:error, "Something bad happen"} # TODO: Return good error messages
-      _ ->
-        {:error, "Not Found"}
+    case Shops.update_onetime_product(shop, product_id, params) do
+      {:ok, product} ->
+        {:ok, %{onetime_product: product}}
+      error ->
+        error
     end
   end
 end
