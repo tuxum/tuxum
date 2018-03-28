@@ -6,7 +6,7 @@ defmodule Core.Shops do
   import Ecto
   import Ecto.Query
 
-  alias Core.Shops.{Shop, OnetimeProduct}
+  alias Core.Shops.{Shop, OnetimeProduct, SubscriptionProduct}
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
@@ -76,6 +76,53 @@ defmodule Core.Shops do
       {:ok, product}
     else
       {:error, _} ->
+        {:error, "Something bad happen"} # TODO: Return good error messages
+      _ ->
+        {:error, "Not Found"}
+    end
+  end
+
+  def find_subscription_product(shop = %Shop{}, %{id: id}) do
+    shop
+    |> assoc(:subscription_products)
+    |> where([p], p.id == ^id)
+    |> DB.replica().one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      product ->
+        {:ok, product}
+    end
+  end
+
+  def list_subscription_products(shop, _opts \\ %{}) do
+    products = shop
+      |> assoc(:subscription_products)
+      |> DB.replica().all()
+
+    {:ok, products}
+  end
+
+  def insert_subscription_product(shop = %Shop{}, attrs) do
+    attrs = transform_money(attrs)
+
+    shop
+    |> build_assoc(:subscription_products)
+    |> SubscriptionProduct.insert(attrs)
+    |> case do
+      {:ok, product} ->
+        {:ok, product}
+      {:error, _changeset} ->
+        {:error, ["Something went wrong"]}
+    end
+  end
+
+  def update_subscription_product(shop = %Shop{}, product_id, attrs) do
+    with {:ok, product} <- find_subscription_product(shop, %{id: product_id}),
+         {:ok, product} <- SubscriptionProduct.update(product, attrs) do
+      {:ok, product}
+    else
+      {:error, _changeset} ->
         {:error, "Something bad happen"} # TODO: Return good error messages
       _ ->
         {:error, "Not Found"}
