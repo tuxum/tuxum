@@ -33,8 +33,7 @@ defmodule Core.Shops.OnetimeProductTest do
     end
 
     test "errors when price is negative", %{product: product} do
-      params = @params
-        |> Map.put(:price, Money.new(:USD, -500))
+      params = @params |> Map.put(:price, Money.new(:USD, -500))
 
       changeset = OnetimeProduct.insert_changeset(product, params)
 
@@ -43,8 +42,7 @@ defmodule Core.Shops.OnetimeProductTest do
     end
 
     test "errors when shipping_fee is negative", %{product: product} do
-      params = @params
-        |> Map.put(:shipping_fee, Money.new(:USD, -5))
+      params = @params |> Map.put(:shipping_fee, Money.new(:USD, -5))
 
       changeset = OnetimeProduct.insert_changeset(product, params)
 
