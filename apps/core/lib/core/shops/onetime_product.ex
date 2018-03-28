@@ -22,6 +22,7 @@ defmodule Core.Shops.OnetimeProduct do
     |> assoc_constraint(:shop)
     |> set_default_shipping_fee()
     |> price_should_be_positive()
+    |> shipping_fee_should_be_positive()
     |> currencies_should_be_same()
   end
 
@@ -31,15 +32,24 @@ defmodule Core.Shops.OnetimeProduct do
     |> validate_required(~w[name is_public price]a)
     |> assoc_constraint(:shop)
     |> price_should_be_positive()
+    |> shipping_fee_should_be_positive()
     |> currencies_should_be_same()
   end
 
   defp price_should_be_positive(changeset) do
-    validate_change(changeset, :price, fn :price, %{amount: amount} ->
-      if Decimal.new(0) |> Decimal.equal?(amount) do
-        [price: "must be greater then 0"]
-      else
+    should_be_positive(changeset, :price)
+  end
+
+  defp shipping_fee_should_be_positive(changeset) do
+    should_be_positive(changeset, :shipping_fee)
+  end
+
+  defp should_be_positive(changeset, column) do
+    validate_change(changeset, column, fn _column, %{amount: amount} ->
+      if Decimal.equal?(amount, 0) || Decimal.positive?(amount) do
         []
+      else
+        [{column, "must be greater then 0"}]
       end
     end)
   end
@@ -56,12 +66,15 @@ defmodule Core.Shops.OnetimeProduct do
   end
 
   defp set_default_shipping_fee(changeset) do
-    case get_change(changeset, :shipping_fee) do
-      nil ->
-        %Money{currency: currency} = get_change(changeset, :price)
-        changeset |> put_change(:shipping_fee, Money.new(currency, 0))
-      _ ->
-        changeset
+    set_default_fee(changeset, :shipping_fee)
+  end
+
+  defp set_default_fee(changeset, column) do
+    if get_change(changeset, column) |> is_nil do
+      %Money{currency: currency} = get_change(changeset, :price)
+      changeset |> put_change(column, Money.new(currency, 0))
+    else
+      changeset
     end
   end
 
