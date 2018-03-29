@@ -19,16 +19,43 @@ defmodule APIWeb.Schema.ShopQueryTest do
       assert graphql_data(conn, """
         query {
           owner {
+            id
             name
+            email
             shop {
+              id
               name
               onetime_products {
                 id
+                shop_id
                 name
+                is_public
+                price {
+                  amount
+                  currency
+                }
+                shipping_fee {
+                  amount
+                  currency
+                }
               }
               subscription_products {
                 id
+                shop_id
                 name
+                is_public
+                price {
+                  amount
+                  currency
+                }
+                setup_fee {
+                  amount
+                  currency
+                }
+                shipping_fee {
+                  amount
+                  currency
+                }
                 delivery_interval {
                   name
                   interval_days
