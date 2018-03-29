@@ -6,7 +6,7 @@ defmodule Core.Shops do
   import Ecto
   import Ecto.Query
 
-  alias Core.Shops.{Shop, OnetimeProduct, SubscriptionProduct}
+  alias Core.Shops.{Shop, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
@@ -142,4 +142,15 @@ defmodule Core.Shops do
     {key, money}
   end
   defp do_transform_money(pair), do: pair
+
+  def find_delivery_interval(%SubscriptionProduct{delivery_interval_id: id}) do
+    DeliveryInterval
+    |> DB.replica().get(id)
+    |> case do
+      nil ->
+        {:error, :not_found}
+      interval ->
+        {:ok, interval}
+    end
+  end
 end

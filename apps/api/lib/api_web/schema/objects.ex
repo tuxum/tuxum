@@ -38,7 +38,9 @@ defmodule APIWeb.Schema.Objects do
     field :price, non_null(:money_with_currency)
     field :setup_fee, non_null(:money_with_currency)
     field :shipping_fee, non_null(:money_with_currency)
-    field :delivery_interval, non_null(:delivery_interval)
+    field :delivery_interval, non_null(:delivery_interval) do
+      resolve &APIWeb.DeliveryIntervalProductResolver.find_delivery_interval/3
+    end
   end
 
   object :money_with_currency do
