@@ -1,43 +1,54 @@
-defmodule Core.Shops.OnetimeProduct do
+defmodule Core.Shops.SubscriptionProduct do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Shops.Shop
+  alias Core.Shops.{Shop, DeliveryInterval}
 
-  schema "onetime_products" do
+  schema "subscription_products" do
     field :name, :string
     field :is_public, :boolean
     field :price, Money.Ecto.Composite.Type
+    field :setup_fee, Money.Ecto.Composite.Type
     field :shipping_fee, Money.Ecto.Composite.Type
 
     belongs_to :shop, Shop
+    belongs_to :delivery_interval, DeliveryInterval
 
     timestamps()
   end
 
-  def insert_changeset(onetime_product, attrs \\ %{}) do
-    onetime_product
-    |> cast(attrs, ~w[name is_public price shipping_fee])
-    |> validate_required(~w[name is_public price]a)
+  def insert_changeset(subscription_product, attrs \\ %{}) do
+    subscription_product
+    |> cast(attrs, ~w[name is_public price setup_fee shipping_fee delivery_interval_id])
+    |> validate_required(~w[name is_public price delivery_interval_id]a)
     |> assoc_constraint(:shop)
+    |> assoc_constraint(:delivery_interval)
     |> set_default_shipping_fee()
+    |> set_default_setup_fee()
     |> price_should_be_positive()
+    |> setup_fee_should_be_positive()
     |> shipping_fee_should_be_positive()
     |> currencies_should_be_same()
   end
 
-  def update_changeset(onetime_product, attrs \\ %{}) do
-    onetime_product
-    |> cast(attrs, ~w[name is_public price shipping_fee])
-    |> validate_required(~w[name is_public price]a)
+  def update_changeset(subscription_product, attrs \\ %{}) do
+    subscription_product
+    |> cast(attrs, ~w[name is_public price setup_fee shipping_fee delivery_interval_id])
+    |> validate_required(~w[name is_public price delivery_interval_id]a)
     |> assoc_constraint(:shop)
+    |> assoc_constraint(:delivery_interval)
     |> price_should_be_positive()
+    |> setup_fee_should_be_positive()
     |> shipping_fee_should_be_positive()
     |> currencies_should_be_same()
   end
 
   defp price_should_be_positive(changeset) do
     should_be_positive(changeset, :price)
+  end
+
+  defp setup_fee_should_be_positive(changeset) do
+    should_be_positive(changeset, :setup_fee)
   end
 
   defp shipping_fee_should_be_positive(changeset) do
@@ -56,13 +67,20 @@ defmodule Core.Shops.OnetimeProduct do
 
   defp currencies_should_be_same(changeset) do
     {_, price} = fetch_field(changeset, :price)
+    {_, setup_fee} = fetch_field(changeset, :setup_fee)
     {_, shipping_fee} = fetch_field(changeset, :shipping_fee)
 
-    if price.currency == shipping_fee.currency do
+    with true <- price.currency == setup_fee.currency,
+         true <- price.currency == shipping_fee.currency do
       changeset
     else
-      add_error(changeset, :price, "price and shipping_fee must have the same currency")
+      false ->
+        add_error(changeset, :price, "price and shipping_fee must have the same currency")
     end
+  end
+
+  defp set_default_setup_fee(changeset) do
+    set_default_fee(changeset, :setup_fee)
   end
 
   defp set_default_shipping_fee(changeset) do
@@ -78,14 +96,14 @@ defmodule Core.Shops.OnetimeProduct do
     end
   end
 
-  def insert(onetime_product, attrs) do
-    onetime_product
+  def insert(subscription_product, attrs) do
+    subscription_product
     |> insert_changeset(attrs)
     |> DB.primary().insert()
   end
 
-  def update(onetime_product, attrs) do
-    onetime_product
+  def update(subscription_product, attrs) do
+    subscription_product
     |> update_changeset(attrs)
     |> DB.primary().update()
   end

@@ -3,7 +3,7 @@ defmodule Core.Shops.Shop do
   import Ecto.Changeset
 
   alias Core.Accounts.Owner
-  alias Core.Shops.OnetimeProduct
+  alias Core.Shops.{OnetimeProduct, SubscriptionProduct}
 
   schema "shops" do
     field :name, :string
@@ -11,6 +11,7 @@ defmodule Core.Shops.Shop do
     belongs_to :owner, Owner
 
     has_many :onetime_products, OnetimeProduct
+    has_many :subscription_products, SubscriptionProduct
 
     timestamps()
   end

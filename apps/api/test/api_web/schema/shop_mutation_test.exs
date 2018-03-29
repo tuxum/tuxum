@@ -7,10 +7,8 @@ defmodule APIWeb.Schema.ShopMutationTest do
     setup %{conn: conn} do
       {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
       {:ok, _shop} = Shops.insert_shop(owner, Fixtures.shop())
-
       {:ok, token} = Accounts.token_from_owner(owner)
-      conn = conn
-        |> put_req_header("authorization", "Bearer #{token}")
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
       %{conn: conn, owner: owner, params: Fixtures.shop()}
     end

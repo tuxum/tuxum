@@ -27,5 +27,16 @@ if Mix.env() == :test do
         shipping_fee: %{currency: "USD", amount: "5"}
       }
     end
+
+    def subscription_product do
+      %{
+        name: Faker.Commerce.product_name(),
+        is_public: true,
+        price: %{currency: "USD", amount: "100"},
+        setup_fee: %{currency: "USD", amount: "10"},
+        shipping_fee: %{currency: "USD", amount: "5"},
+        delivery_interval_id: 1
+      }
+    end
   end
 end

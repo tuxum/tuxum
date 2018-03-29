@@ -7,10 +7,8 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
     setup %{conn: conn} do
       {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
       {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
-
       {:ok, token} = Accounts.token_from_owner(owner)
-      conn = conn
-        |> put_req_header("authorization", "Bearer #{token}")
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
       params = Fixtures.onetime_product()
 
@@ -45,10 +43,8 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
       {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
       {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
       {:ok, product} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
-
       {:ok, token} = Accounts.token_from_owner(owner)
-      conn = conn
-        |> put_req_header("authorization", "Bearer #{token}")
+      conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
       %{conn: conn, shop: shop, product: product, params: Fixtures.onetime_product()}
     end

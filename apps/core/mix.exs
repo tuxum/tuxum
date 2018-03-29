@@ -36,7 +36,7 @@ defmodule Core.MixProject do
       {:pbkdf2_elixir, "~> 0.12"},
       {:joken, "~> 1.5"},
       {:poison, "~> 3.1"},
-      {:decimal, "~> 1.4"},
+      {:decimal, "~> 1.5"},
       {:ex_money, "~> 2.2"},
 
       {:db, in_umbrella: true},
