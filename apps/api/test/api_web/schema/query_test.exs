@@ -25,40 +25,50 @@ defmodule APIWeb.Schema.ShopQueryTest do
             shop {
               id
               name
-              onetime_products {
-                id
-                shop_id
-                name
-                is_public
-                price {
-                  amount
-                  currency
-                }
-                shipping_fee {
-                  amount
-                  currency
+              onetime_products (first: 10) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    shop_id
+                    name
+                    is_public
+                    price {
+                      amount
+                      currency
+                    }
+                    shipping_fee {
+                      amount
+                      currency
+                    }
+                  }
                 }
               }
-              subscription_products {
-                id
-                shop_id
-                name
-                is_public
-                price {
-                  amount
-                  currency
-                }
-                setup_fee {
-                  amount
-                  currency
-                }
-                shipping_fee {
-                  amount
-                  currency
-                }
-                delivery_interval {
-                  name
-                  interval_days
+              subscription_products (first: 10) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    shop_id
+                    name
+                    is_public
+                    price {
+                      amount
+                      currency
+                    }
+                    setup_fee {
+                      amount
+                      currency
+                    }
+                    shipping_fee {
+                      amount
+                      currency
+                    }
+                    delivery_interval {
+                      name
+                      interval_days
+                    }
+                  }
                 }
               }
             }

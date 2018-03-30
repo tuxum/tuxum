@@ -1,5 +1,6 @@
 defmodule APIWeb.Schema.OwnerTypes do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   object :owner_queries do
     field :owner, :owner do
@@ -14,29 +15,29 @@ defmodule APIWeb.Schema.OwnerTypes do
   end
 
   object :owner_mutations do
-    field :authenticate, :authenticate_payload do
-      arg :input, non_null(:authenticate_input)
+    payload field :authenticate do
+      input do
+        field :email, non_null(:string)
+        field :password, non_null(:string)
+      end
+      output do
+        field :token, :string
+      end
+
       resolve &APIWeb.OwnerResolver.authenticate/2
     end
 
-    field :signup, :signup_payload do
-      arg :input, non_null(:signup_input)
+    payload field :signup do
+      input do
+        field :owner, non_null(:signup_input_owner)
+        field :shop, non_null(:signup_input_shop)
+      end
+      output do
+        field :owner, non_null(:owner)
+      end
+
       resolve &APIWeb.OwnerResolver.signup/2
     end
-  end
-
-  input_object :authenticate_input do
-    field :email, non_null(:string)
-    field :password, non_null(:string)
-  end
-
-  object :authenticate_payload do
-    field :token, :string
-  end
-
-  input_object :signup_input do
-    field :owner, non_null(:signup_input_owner)
-    field :shop, non_null(:signup_input_shop)
   end
 
   input_object :signup_input_owner do
@@ -47,9 +48,5 @@ defmodule APIWeb.Schema.OwnerTypes do
 
   input_object :signup_input_shop do
     field :name, non_null(:string)
-  end
-
-  object :signup_payload do
-    field :owner, non_null(:owner)
   end
 end

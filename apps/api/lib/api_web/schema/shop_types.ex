@@ -1,20 +1,19 @@
 defmodule APIWeb.Schema.ShopTypes do
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   object :shop_mutations do
-    field :update_shop, :update_shop_payload do
+    payload field :update_shop do
       middleware APIWeb.AuthMiddleware
 
-      arg :input, non_null(:update_shop_input)
+      input do
+        field :name, non_null(:string)
+      end
+      output do
+        field :shop, non_null(:shop)
+      end
+
       resolve &APIWeb.ShopResolver.update_shop/2
     end
-  end
-
-  input_object :update_shop_input do
-    field :name, non_null(:string)
-  end
-
-  object :update_shop_payload do
-    field :shop, non_null(:shop)
   end
 end

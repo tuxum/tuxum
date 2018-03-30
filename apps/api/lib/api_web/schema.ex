@@ -1,5 +1,6 @@
 defmodule APIWeb.Schema do
   use Absinthe.Schema
+  use Absinthe.Relay.Schema, :modern
 
   import_types APIWeb.Schema.Objects
 
