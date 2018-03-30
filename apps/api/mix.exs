@@ -43,6 +43,7 @@ defmodule API.Mixfile do
 
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
+      {:absinthe_relay, "~> 1.4"},
 
       {:core, in_umbrella: true}
     ]
