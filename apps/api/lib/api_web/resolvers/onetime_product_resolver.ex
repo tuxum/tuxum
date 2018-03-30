@@ -12,10 +12,10 @@ defmodule APIWeb.OnetimeProductResolver do
     Absinthe.Relay.Connection.from_list(products, args)
   end
 
-  def create_onetime_product(%{input: params}, resolution) do
+  def create_onetime_product(input, resolution) do
     %{current_shop: shop} = resolution.context
 
-    case Shops.insert_onetime_product(shop, params) do
+    case Shops.insert_onetime_product(shop, input) do
       {:ok, product} ->
         {:ok, %{onetime_product: product}}
       error ->
@@ -23,9 +23,9 @@ defmodule APIWeb.OnetimeProductResolver do
     end
   end
 
-  def update_onetime_product(%{input: params}, resolution) do
+  def update_onetime_product(input, resolution) do
     %{current_shop: shop} = resolution.context
-    {product_id, params} = Map.pop(params, :onetime_product_id)
+    {product_id, params} = Map.pop(input, :onetime_product_id)
 
     case Shops.update_onetime_product(shop, product_id, params) do
       {:ok, product} ->

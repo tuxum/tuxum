@@ -1,7 +1,7 @@
 defmodule APIWeb.OwnerResolver do
   alias Core.Accounts
 
-  def signup(%{input: input}, _resolution) do
+  def signup(input = %{owner: _, shop: _}, _resolution) do
     case Core.signup(input) do
       {:ok, changes} ->
         {:ok, changes}
@@ -10,7 +10,7 @@ defmodule APIWeb.OwnerResolver do
     end
   end
 
-  def authenticate(%{input: %{email: email, password: password}}, _resolution) do
+  def authenticate(%{email: email, password: password}, _resolution) do
     case Accounts.authenticate(email, password) do
       {:ok, owner} ->
         {:ok, token} = Accounts.token_from_owner(owner)
