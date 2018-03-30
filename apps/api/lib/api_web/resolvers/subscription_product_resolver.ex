@@ -7,8 +7,9 @@ defmodule APIWeb.SubscriptionProductResolver do
     Shops.find_subscription_product(shop, %{id: id})
   end
 
-  def list_subscription_products(shop = %Shop{}, _args, _resolution) do
-    Shops.list_subscription_products(shop)
+  def list_subscription_products(shop = %Shop{}, args, _resolution) do
+    {:ok, products} = Shops.list_subscription_products(shop)
+    Absinthe.Relay.Connection.from_list(products, args)
   end
 
   def create_subscription_product(%{input: params}, resolution) do

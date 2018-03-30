@@ -7,8 +7,9 @@ defmodule APIWeb.OnetimeProductResolver do
     Shops.find_onetime_product(shop, %{id: id})
   end
 
-  def list_onetime_products(shop = %Shop{}, _args, _resolution) do
-    Shops.list_onetime_products(shop)
+  def list_onetime_products(shop = %Shop{}, args, _resolution) do
+    {:ok, products} = Shops.list_onetime_products(shop)
+    Absinthe.Relay.Connection.from_list(products, args)
   end
 
   def create_onetime_product(%{input: params}, resolution) do
