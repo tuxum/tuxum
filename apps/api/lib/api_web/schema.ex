@@ -12,6 +12,7 @@ defmodule APIWeb.Schema do
 
   query do
     import_fields :owner_queries
+    import_fields :shop_queries
   end
 
   mutation do
