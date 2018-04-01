@@ -6,7 +6,7 @@ defmodule Core.Shops do
   import Ecto
   import Ecto.Query
 
-  alias Core.Shops.{Shop, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
+  alias Core.Shops.{Shop, Customer, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
@@ -35,6 +35,49 @@ defmodule Core.Shops do
     end
   end
 
+  def find_customer(shop = %Shop{}, %{id: id}) do
+    shop
+    |> assoc(:customers)
+    |> where([c], c.id == ^id)
+    |> DB.replica().one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      customer ->
+        {:ok, customer}
+    end
+  end
+
+  def list_customers(shop = %Shop{}, _opts \\ %{}) do
+    customers = shop
+      |> assoc(:customers)
+      |> DB.replica().all()
+
+    {:ok, customers}
+  end
+
+  def insert_customer(shop = %Shop{}, attrs) do
+    shop
+    |> build_assoc(:customers)
+    |> Customer.insert(attrs)
+    |> case do
+      {:ok, customer} ->
+        {:ok, customer}
+      {:error, _changeset} ->
+        {:error, ["Something went wrong"]}
+    end
+  end
+
+  def update_customer(shop = %Shop{}, customer_id, attrs) do
+    with {:ok, customer} <- find_customer(shop, %{id: customer_id}),
+         {:ok, customer} <- Customer.update(customer, attrs) do
+      {:ok, customer}
+    else
+      _ ->
+        {:error, ["Something went wrong"]}
+    end
+  end
+
   def find_onetime_product(shop = %Shop{}, %{id: id}) do
     shop
     |> assoc(:onetime_products)
@@ -48,7 +91,7 @@ defmodule Core.Shops do
     end
   end
 
-  def list_onetime_products(shop, _opts \\ %{}) do
+  def list_onetime_products(shop = %Shop{}, _opts \\ %{}) do
     products = shop
       |> assoc(:onetime_products)
       |> DB.replica().all()
