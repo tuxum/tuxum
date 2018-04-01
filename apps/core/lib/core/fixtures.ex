@@ -38,5 +38,12 @@ if Mix.env() == :test do
         delivery_interval_id: 1
       }
     end
+
+    def customer do
+      %{
+        name: Faker.Name.name(),
+        email: Faker.Internet.email()
+      }
+    end
   end
 end
