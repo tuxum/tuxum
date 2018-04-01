@@ -61,4 +61,15 @@ defmodule Core.ShopsTest do
       {:error, :not_found} = Shops.update_shop(owner, Fixtures.shop())
     end
   end
+
+  describe "inserting customers" do
+    setup [:insert_owner, :insert_shop]
+
+    test "returns error when email is already registered", %{shop: shop} do
+      params = Fixtures.customer()
+
+      assert {:ok, _customer} = Shops.insert_customer(shop, params)
+      assert {:error, _changeset} = Shops.insert_customer(shop, params)
+    end
+  end
 end

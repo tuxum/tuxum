@@ -18,6 +18,7 @@ defmodule Core.Shops.Customer do
     |> cast(attrs, ~w[name email]a)
     |> validate_required(~w[name email]a)
     |> assoc_constraint(:shop)
+    |> unique_constraint(:email, name: :customers_shop_id_email_index)
   end
 
   def update_changeset(customer, attrs \\ %{}) do

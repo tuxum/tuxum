@@ -11,5 +11,6 @@ defmodule DB.Repo.Migrations.AddCustomersTable do
     end
 
     create index(:customers, [:email])
+    create unique_index(:customers, [:shop_id, :email], name: :customers_shop_id_email_index)
   end
 end
