@@ -9,5 +9,7 @@ defmodule DB.Repo.Migrations.AddCustomersTable do
 
       timestamps()
     end
+
+    create index(:customers, [:email])
   end
 end

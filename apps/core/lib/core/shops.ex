@@ -48,6 +48,19 @@ defmodule Core.Shops do
     end
   end
 
+  def find_customer(shop = %Shop{}, %{email: email}) do
+    shop
+    |> assoc(:customers)
+    |> where([c], c.email == ^email)
+    |> DB.replica().one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      customer ->
+        {:ok, customer}
+    end
+  end
+
   def list_customers(shop = %Shop{}, _opts \\ %{}) do
     customers = shop
       |> assoc(:customers)
