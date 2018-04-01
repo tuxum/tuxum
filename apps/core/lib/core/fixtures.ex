@@ -38,5 +38,9 @@ if Mix.env() == :test do
         delivery_interval_id: 1
       }
     end
+
+    def subscription do
+      %{}
+    end
   end
 end
