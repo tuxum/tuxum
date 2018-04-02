@@ -45,5 +45,18 @@ if Mix.env() == :test do
         email: Faker.Internet.email()
       }
     end
+
+    def address do
+      %{
+        name: Faker.Name.name(),
+        postal_code: Faker.Address.zip_code(),
+        country: Faker.Address.country_code(),
+        district: Faker.Address.state(),
+        line1: Faker.Address.street_address(),
+        line2: Faker.Address.secondary_address(),
+        line3: nil,
+        phone: Faker.Phone.EnUs.phone(),
+      }
+    end
   end
 end
