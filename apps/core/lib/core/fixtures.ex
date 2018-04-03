@@ -48,6 +48,7 @@ if Mix.env() == :test do
 
     def address do
       %{
+        label: "Home",
         name: Faker.Name.name(),
         postal_code: Faker.Address.zip_code(),
         country: Faker.Address.country_code(),

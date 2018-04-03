@@ -3,6 +3,7 @@ defmodule Core.Shops.Address do
   import Ecto.Changeset
 
   schema "addresses" do
+    field :label, :string
     field :name, :string
     field :postal_code, :string
     field :country, :string
@@ -15,10 +16,13 @@ defmodule Core.Shops.Address do
     timestamps()
   end
 
+  @cast_attrs ~w[label name postal_code country district line1 line2 line3 phone]a
+  @required_attrs ~w[name postal_code country district line1 phone]a
+
   def insert_changeset(customer, attrs \\ %{}) do
     customer
-    |> cast(attrs, ~w[name postal_code country district line1 line2 line3 phone]a)
-    |> validate_required(~w[name postal_code country district line1 phone]a)
+    |> cast(attrs, @cast_attrs)
+    |> validate_required(@required_attrs)
     |> validate_length(:country, is: 2)
   end
 

@@ -3,6 +3,7 @@ defmodule DB.Repo.Migrations.AddAddressesTable do
 
   def change do
     create table(:addresses) do
+      add :label, :string
       add :name, :string, null: false
       add :postal_code, :string, null: false
       add :country, :string, null: false, size: 2
