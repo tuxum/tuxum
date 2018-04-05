@@ -4,7 +4,7 @@ defmodule APIWeb.OwnerResolver do
   alias Core.Accounts
 
   def signup(input = %{owner: _, shop: _}, _resolution) do
-    case Core.signup(input) do
+    case Accounts.signup(input) do
       {:ok, changes} ->
         {:ok, changes}
       {:error, changeset} ->

@@ -6,6 +6,7 @@ defmodule Core.Accounts do
   import Ecto.Query
 
   alias Core.Accounts.{Owner, PasswordIdentity, Token}
+  alias Core.Shops
 
   def find_owner(%{email: email}) do
     Owner
@@ -24,6 +25,20 @@ defmodule Core.Accounts do
       nil -> {:error, :not_found}
       owner -> {:ok, owner}
     end
+  end
+
+  def signup(%{owner: owner_params, shop: shop_params}) do
+    repo = DB.primary()
+
+    repo.transaction(fn ->
+      with {:ok, owner} <- insert_owner(owner_params),
+           {:ok, shop} <- Shops.insert_shop(owner, shop_params) do
+        %{owner: owner, shop: shop}
+      else
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   def insert_owner(%{name: name, email: email, password: password}) do
