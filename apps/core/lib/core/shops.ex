@@ -75,8 +75,7 @@ defmodule Core.Shops do
          {:ok, customer} <- Customer.update(customer, attrs) do
       {:ok, customer}
     else
-      {:error, changeset} ->
-        {:error, changeset}
+      error -> error
     end
   end
 
@@ -89,8 +88,7 @@ defmodule Core.Shops do
          {:ok, address} <- Address.update(address, attrs) do
       {:ok, address}
     else
-      _ ->
-        {:error, ["Something went wrong"]}
+      error -> error
     end
   end
 
@@ -112,12 +110,6 @@ defmodule Core.Shops do
     shop
     |> build_assoc(:onetime_products)
     |> OnetimeProduct.insert(attrs)
-    |> case do
-      {:ok, product} ->
-        {:ok, product}
-      {:error, _changeset} ->
-        {:error, ["Something went wrong"]}
-    end
   end
 
   def update_onetime_product(shop = %Shop{}, product_id, attrs) do
@@ -125,10 +117,7 @@ defmodule Core.Shops do
          {:ok, product} <- OnetimeProduct.update(product, attrs) do
       {:ok, product}
     else
-      {:error, _} ->
-        {:error, "Something bad happen"} # TODO: Return good error messages
-      _ ->
-        {:error, "Not Found"}
+      error -> error
     end
   end
 
@@ -150,12 +139,6 @@ defmodule Core.Shops do
     shop
     |> build_assoc(:subscription_products)
     |> SubscriptionProduct.insert(attrs)
-    |> case do
-      {:ok, product} ->
-        {:ok, product}
-      {:error, _changeset} ->
-        {:error, ["Something went wrong"]}
-    end
   end
 
   def update_subscription_product(shop = %Shop{}, product_id, attrs) do
@@ -163,10 +146,7 @@ defmodule Core.Shops do
          {:ok, product} <- SubscriptionProduct.update(product, attrs) do
       {:ok, product}
     else
-      {:error, _changeset} ->
-        {:error, "Something bad happen"} # TODO: Return good error messages
-      _ ->
-        {:error, "Not Found"}
+      error -> error
     end
   end
 
