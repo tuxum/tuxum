@@ -6,7 +6,7 @@ defmodule Core.Shops do
   import Ecto
   import Ecto.Query
 
-  alias Core.Shops.{Shop, Customer, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
+  alias Core.Shops.{Shop, Customer, Address, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
@@ -70,21 +70,60 @@ defmodule Core.Shops do
   end
 
   def insert_customer(shop = %Shop{}, attrs) do
-    shop
-    |> build_assoc(:customers)
-    |> Customer.insert(attrs)
-    |> case do
-      {:ok, customer} ->
-        {:ok, customer}
-      {:error, _changeset} ->
-        {:error, ["Something went wrong"]}
-    end
+    repo = DB.primary()
+
+    {address_attrs, attrs} = Map.pop(attrs, :addresses)
+
+    repo.transaction(fn ->
+      customer = shop |> build_assoc(:customers)
+
+      with {:ok, customer} <- Customer.insert(customer, attrs) do
+        Enum.each(address_attrs, fn address ->
+          with {:ok, address} <- %Address{} |> Address.insert(address),
+               customer_address = %CustomerAddress{customer_id: customer.id, address_id: address.id},
+               {:ok, _} <- CustomerAddress.insert(customer_address, %{}) do
+            nil
+          else
+            {:error, changeset} ->
+              repo.rollback(changeset)
+          end
+        end)
+
+        customer
+      else
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   def update_customer(shop = %Shop{}, customer_id, attrs) do
     with {:ok, customer} <- find_customer(shop, %{id: customer_id}),
          {:ok, customer} <- Customer.update(customer, attrs) do
       {:ok, customer}
+    else
+      _ ->
+        {:error, ["Something went wrong"]}
+    end
+  end
+
+  def find_address(customer, %{id: id}) do
+    customer
+    |> assoc(:addresses)
+    |> where([a], a.id == ^id)
+    |> DB.replica().one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+      address ->
+        {:ok, address}
+    end
+  end
+
+  def update_address(customer, address_id, attrs) do
+    with {:ok, address} <- find_address(customer, %{id: address_id}),
+         {:ok, address} <- Address.update(address, attrs) do
+      {:ok, address}
     else
       _ ->
         {:error, ["Something went wrong"]}

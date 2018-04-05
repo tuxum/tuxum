@@ -42,7 +42,8 @@ if Mix.env() == :test do
     def customer do
       %{
         name: Faker.Name.name(),
-        email: Faker.Internet.email()
+        email: Faker.Internet.email(),
+        addresses: [address()],
       }
     end
 

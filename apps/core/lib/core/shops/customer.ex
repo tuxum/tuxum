@@ -2,13 +2,15 @@ defmodule Core.Shops.Customer do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Shops.{Shop}
+  alias Core.Shops.{Shop, CustomerAddress, Address}
 
   schema "customers" do
     field :name, :string
     field :email, :string
 
     belongs_to :shop, Shop
+    has_many :customer_addresses, CustomerAddress
+    has_many :addresses, through: [:customer_addresses, :address]
 
     timestamps()
   end
