@@ -7,8 +7,8 @@ defmodule Core do
          {:ok, shop} <- Shops.insert_shop(owner, shop_params) do
       {:ok, %{owner: owner, shop: shop}}
     else
-      _ ->
-        {:error, "Something went wrong"}
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 end

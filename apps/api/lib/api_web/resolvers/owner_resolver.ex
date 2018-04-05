@@ -1,12 +1,14 @@
 defmodule APIWeb.OwnerResolver do
+  use APIWeb, :resolver
+
   alias Core.Accounts
 
   def signup(input = %{owner: _, shop: _}, _resolution) do
     case Core.signup(input) do
       {:ok, changes} ->
         {:ok, changes}
-      {:error, _} ->
-        {:error, "Something bad happen"} # TODO: Return good error messages
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 
@@ -15,8 +17,8 @@ defmodule APIWeb.OwnerResolver do
       {:ok, owner} ->
         {:ok, token} = Accounts.token_from_owner(owner)
         {:ok, %{token: token}}
-      _ ->
-        {:error, "Unauthorized"}
+      :error ->
+        {:error, translate_errors(:unauthorized)}
     end
   end
 end

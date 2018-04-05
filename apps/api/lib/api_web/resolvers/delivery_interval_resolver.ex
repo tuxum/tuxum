@@ -1,4 +1,5 @@
 defmodule APIWeb.DeliveryIntervalProductResolver do
+  use APIWeb, :resolver
 
   alias Core.Shops
   alias Core.Shops.SubscriptionProduct

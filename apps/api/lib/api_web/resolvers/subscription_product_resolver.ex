@@ -1,4 +1,5 @@
 defmodule APIWeb.SubscriptionProductResolver do
+  use APIWeb, :resolver
 
   alias Core.Shops
   alias Core.Shops.Shop
@@ -18,8 +19,8 @@ defmodule APIWeb.SubscriptionProductResolver do
     case Shops.insert_subscription_product(shop, input) do
       {:ok, product} ->
         {:ok, %{subscription_product: product}}
-      error ->
-        error
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 
@@ -30,8 +31,8 @@ defmodule APIWeb.SubscriptionProductResolver do
     case Shops.update_subscription_product(shop, product_id, params) do
       {:ok, product} ->
         {:ok, %{subscription_product: product}}
-      error ->
-        error
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 end

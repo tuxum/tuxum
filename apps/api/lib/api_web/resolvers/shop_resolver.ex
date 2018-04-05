@@ -1,4 +1,6 @@
 defmodule APIWeb.ShopResolver do
+  use APIWeb, :resolver
+
   alias Core.Shops
 
   def find_shop(_args, resolution) do
@@ -6,7 +8,7 @@ defmodule APIWeb.ShopResolver do
       %{current_shop: shop} ->
         {:ok, shop}
       _ ->
-        {:error, "Not Found"}
+        {:error, translate_errors(:not_found)}
     end
   end
 
@@ -16,8 +18,8 @@ defmodule APIWeb.ShopResolver do
     case Shops.insert_shop(current_owner, input) do
       {:ok, shop} ->
         {:ok, %{shop: shop}}
-      {:error, _} ->
-        {:error, "Something bad happen"} # TODO: Return good error messages
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 
@@ -27,8 +29,8 @@ defmodule APIWeb.ShopResolver do
     case Shops.update_shop(current_owner, input) do
       {:ok, shop} ->
         {:ok, %{shop: shop}}
-      {:error, :not_found} ->
-        {:error, "Not Found"} # TODO: Return good error messages
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 end

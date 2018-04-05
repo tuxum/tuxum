@@ -6,7 +6,7 @@ defmodule Core.Shops do
   import Ecto
   import Ecto.Query
 
-  alias Core.Shops.{Shop, Customer, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
+  alias Core.Shops.{Shop, Customer, Address, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
@@ -76,8 +76,8 @@ defmodule Core.Shops do
          {:ok, customer} <- Customer.update(customer, attrs) do
       {:ok, customer}
     else
-      _ ->
-        {:error, ["Something went wrong"]}
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 

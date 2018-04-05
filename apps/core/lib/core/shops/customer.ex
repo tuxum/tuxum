@@ -2,7 +2,7 @@ defmodule Core.Shops.Customer do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Core.Shops.{Shop, CustomerAddress, Address}
+  alias Core.Shops.{Shop, CustomerAddress}
 
   schema "customers" do
     field :name, :string

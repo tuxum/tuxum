@@ -1,4 +1,5 @@
 defmodule APIWeb.CustomerResolver do
+  use APIWeb, :resolver
 
   alias Core.Shops
   alias Core.Shops.Shop
@@ -18,8 +19,8 @@ defmodule APIWeb.CustomerResolver do
     case Shops.insert_customer(shop, input) do
       {:ok, customer} ->
         {:ok, %{customer: customer}}
-      error ->
-        error
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 
@@ -30,8 +31,8 @@ defmodule APIWeb.CustomerResolver do
     case Shops.update_customer(shop, customer_id, params) do
       {:ok, customer} ->
         {:ok, %{customer: customer}}
-      error ->
-        error
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 end

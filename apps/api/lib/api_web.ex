@@ -40,6 +40,12 @@ defmodule APIWeb do
     end
   end
 
+  def resolver do
+    quote do
+      import APIWeb.ErrorHelpers
+    end
+  end
+
   def router do
     quote do
       use Phoenix.Router
