@@ -6,19 +6,11 @@ defmodule Core.Shops do
   import Ecto
   import Ecto.Query
 
-  alias Core.Shops.{Shop, Customer, Address, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
+  alias Core.Shops.{Shop, Customer, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
-    Shop
-    |> where([s], s.owner_id == ^id)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      owner ->
-        {:ok, owner}
-    end
+    Shop |> find_by(owner_id: id)
   end
 
   def insert_shop(owner = %Owner{}, attrs) do
@@ -36,29 +28,11 @@ defmodule Core.Shops do
   end
 
   def find_customer(shop = %Shop{}, %{id: id}) do
-    shop
-    |> assoc(:customers)
-    |> where([c], c.id == ^id)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      customer ->
-        {:ok, customer}
-    end
+    shop |> assoc(:customers) |> find_by(id: id)
   end
 
   def find_customer(shop = %Shop{}, %{email: email}) do
-    shop
-    |> assoc(:customers)
-    |> where([c], c.email == ^email)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      customer ->
-        {:ok, customer}
-    end
+    shop |> assoc(:customers) |> find_by(email: email)
   end
 
   def list_customers(shop = %Shop{}, _opts \\ %{}) do
@@ -108,16 +82,7 @@ defmodule Core.Shops do
   end
 
   def find_address(customer, %{id: id}) do
-    customer
-    |> assoc(:addresses)
-    |> where([a], a.id == ^id)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      address ->
-        {:ok, address}
-    end
+    customer |> assoc(:addresses) |> find_by(id: id)
   end
 
   def update_address(customer, address_id, attrs) do
@@ -131,16 +96,7 @@ defmodule Core.Shops do
   end
 
   def find_onetime_product(shop = %Shop{}, %{id: id}) do
-    shop
-    |> assoc(:onetime_products)
-    |> where([p], p.id == ^id)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      product ->
-        {:ok, product}
-    end
+    shop |> assoc(:onetime_products) |> find_by(id: id)
   end
 
   def list_onetime_products(shop = %Shop{}, _opts \\ %{}) do
@@ -178,16 +134,7 @@ defmodule Core.Shops do
   end
 
   def find_subscription_product(shop = %Shop{}, %{id: id}) do
-    shop
-    |> assoc(:subscription_products)
-    |> where([p], p.id == ^id)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      product ->
-        {:ok, product}
-    end
+    shop |> assoc(:subscription_products) |> find_by(id: id)
   end
 
   def list_subscription_products(shop, _opts \\ %{}) do
@@ -239,13 +186,18 @@ defmodule Core.Shops do
   defp do_transform_money(pair), do: pair
 
   def find_delivery_interval(%SubscriptionProduct{delivery_interval_id: id}) do
-    DeliveryInterval
-    |> DB.replica().get(id)
+    DeliveryInterval |> find_by(id: id)
+  end
+
+  defp find_by(queryable, condition) do
+    queryable
+    |> where(^condition)
+    |> DB.replica().one()
     |> case do
       nil ->
         {:error, :not_found}
-      interval ->
-        {:ok, interval}
+      resource ->
+        {:ok, resource}
     end
   end
 end
