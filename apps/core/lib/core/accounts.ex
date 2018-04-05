@@ -5,7 +5,6 @@ defmodule Core.Accounts do
 
   import Ecto.Query
 
-  alias Ecto.Multi
   alias Core.Accounts.{Owner, PasswordIdentity, Token}
 
   def find_owner(%{email: email}) do
@@ -29,22 +28,17 @@ defmodule Core.Accounts do
 
   def insert_owner(%{name: name, email: email, password: password}) do
     repo = DB.primary()
-    owner_changeset = %Owner{} |> Owner.changeset(%{name: name, email: email})
 
-    Multi.new()
-    |> Multi.insert(:owner, owner_changeset)
-    |> Multi.run(:password_identity, fn %{owner: owner} ->
-      owner
-      |> Ecto.build_assoc(:password_identity)
-      |> PasswordIdentity.insert(%{password: password})
+    repo.transaction(fn ->
+      with {:ok, owner} <- %Owner{} |> Owner.insert(%{name: name, email: email}),
+           identity = owner |> Ecto.build_assoc(:password_identity),
+           {:ok, password_identity} <- identity |> PasswordIdentity.insert(%{password: password}) do
+        %Owner{owner | password_identity: password_identity}
+      else
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
     end)
-    |> repo.transaction()
-    |> case do
-      {:ok, %{owner: owner, password_identity: password_identity}} ->
-        {:ok, %Owner{owner | password_identity: password_identity}}
-      {:error, _, changeset, _} ->
-        {:error, changeset}
-    end
   end
 
   def authenticate(email, password) do

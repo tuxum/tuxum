@@ -5,7 +5,7 @@ defmodule APIWeb.ErrorHelpers do
 
   def translate_errors(:not_found), do: "Not Found"
 
-  def translate_errors(::unauthorized), do: "Unauthorized"
+  def translate_errors(:unauthorized), do: "Unauthorized"
 
   def translate_errors(changeset) do
     changeset
