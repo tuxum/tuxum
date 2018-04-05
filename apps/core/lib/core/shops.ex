@@ -3,8 +3,7 @@ defmodule Core.Shops do
   Provides functionality to manage shops
   """
 
-  import Ecto
-  import Ecto.Query
+  use Core
 
   alias Core.Shops.{Shop, Customer, Address, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
   alias Core.Accounts.{Owner}
@@ -187,17 +186,5 @@ defmodule Core.Shops do
 
   def find_delivery_interval(%SubscriptionProduct{delivery_interval_id: id}) do
     DeliveryInterval |> find_by(id: id)
-  end
-
-  defp find_by(queryable, condition) do
-    queryable
-    |> where(^condition)
-    |> DB.replica().one()
-    |> case do
-      nil ->
-        {:error, :not_found}
-      resource ->
-        {:ok, resource}
-    end
   end
 end

@@ -3,28 +3,17 @@ defmodule Core.Accounts do
   Module provides functionality around owner identities.
   """
 
-  import Ecto.Query
+  use Core
 
   alias Core.Accounts.{Owner, PasswordIdentity, Token}
   alias Core.Shops
 
   def find_owner(%{email: email}) do
-    Owner
-    |> where([u], u.email == ^email)
-    |> DB.replica().one()
-    |> case do
-      nil -> {:error, :not_found}
-      owner -> {:ok, owner}
-    end
+    Owner |> find_by(email: email)
   end
 
   def find_owner(%{id: id}) do
-    Owner
-    |> DB.replica().get(id)
-    |> case do
-      nil -> {:error, :not_found}
-      owner -> {:ok, owner}
-    end
+    Owner |> find_by(id: id)
   end
 
   def signup(%{owner: owner_params, shop: shop_params}) do
