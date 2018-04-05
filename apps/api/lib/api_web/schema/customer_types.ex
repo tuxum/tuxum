@@ -9,6 +9,7 @@ defmodule APIWeb.Schema.CustomerTypes do
       input do
         field :name, non_null(:string)
         field :email, non_null(:string)
+        field :addresses, list_of(:address)
       end
       output do
         field :customer, non_null(:customer)

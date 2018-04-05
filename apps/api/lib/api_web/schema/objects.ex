@@ -34,8 +34,20 @@ defmodule APIWeb.Schema.Objects do
     field :shop_id, non_null(:id)
     field :name, non_null(:string)
     field :email, non_null(:string)
+    field :addresses, list_of(:address)
   end
 
+  object :address do
+    field :label, :string
+    field :name, non_null(:string)
+    field :postal_code, non_null(:string)
+    field :country, non_null(:string)
+    field :district, non_null(:string)
+    field :line1, non_null(:string)
+    field :line2, :string
+    field :line3, :string
+    field :phone, non_null(:string)
+  end
 
   object :onetime_product do
     field :id, non_null(:id)

@@ -46,7 +46,9 @@ defmodule APIWeb.Schema.CustomerMutationTest do
       {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
-      %{conn: conn, shop: shop, customer: customer, params: Fixtures.customer()}
+      params = Fixtures.customer() |> Map.delete(:addresses)
+
+      %{conn: conn, shop: shop, customer: customer, params: params}
     end
 
     test "updates onetime customer", %{conn: conn, shop: shop, customer: customer, params: params} do
