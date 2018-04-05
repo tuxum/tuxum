@@ -1,4 +1,5 @@
 defmodule APIWeb.OnetimeProductResolver do
+  use APIWeb, :resolver
 
   alias Core.Shops
   alias Core.Shops.Shop
@@ -18,8 +19,8 @@ defmodule APIWeb.OnetimeProductResolver do
     case Shops.insert_onetime_product(shop, input) do
       {:ok, product} ->
         {:ok, %{onetime_product: product}}
-      error ->
-        error
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 
@@ -30,8 +31,8 @@ defmodule APIWeb.OnetimeProductResolver do
     case Shops.update_onetime_product(shop, product_id, params) do
       {:ok, product} ->
         {:ok, %{onetime_product: product}}
-      error ->
-        error
+      {:error, changeset} ->
+        {:error, translate_errors(changeset)}
     end
   end
 end

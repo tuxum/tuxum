@@ -38,5 +38,27 @@ if Mix.env() == :test do
         delivery_interval_id: 1
       }
     end
+
+    def customer do
+      %{
+        name: Faker.Name.name(),
+        email: Faker.Internet.email(),
+        addresses: [address()],
+      }
+    end
+
+    def address do
+      %{
+        label: "Home",
+        name: Faker.Name.name(),
+        postal_code: Faker.Address.zip_code(),
+        country: Faker.Address.country_code(),
+        district: Faker.Address.state(),
+        line1: Faker.Address.street_address(),
+        line2: Faker.Address.secondary_address(),
+        line3: nil,
+        phone: Faker.Phone.EnUs.phone(),
+      }
+    end
   end
 end

@@ -3,48 +3,46 @@ defmodule Core.Accounts do
   Module provides functionality around owner identities.
   """
 
-  import Ecto.Query
+  use Core
 
-  alias Ecto.Multi
   alias Core.Accounts.{Owner, PasswordIdentity, Token}
+  alias Core.Shops
 
   def find_owner(%{email: email}) do
-    Owner
-    |> where([u], u.email == ^email)
-    |> DB.replica().one()
-    |> case do
-      nil -> {:error, :not_found}
-      owner -> {:ok, owner}
-    end
+    Owner |> find_by(email: email)
   end
 
   def find_owner(%{id: id}) do
-    Owner
-    |> DB.replica().get(id)
-    |> case do
-      nil -> {:error, :not_found}
-      owner -> {:ok, owner}
-    end
+    Owner |> find_by(id: id)
+  end
+
+  def signup(%{owner: owner_params, shop: shop_params}) do
+    repo = DB.primary()
+
+    repo.transaction(fn ->
+      with {:ok, owner} <- insert_owner(owner_params),
+           {:ok, shop} <- Shops.insert_shop(owner, shop_params) do
+        %{owner: owner, shop: shop}
+      else
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   def insert_owner(%{name: name, email: email, password: password}) do
     repo = DB.primary()
-    owner_changeset = %Owner{} |> Owner.changeset(%{name: name, email: email})
 
-    Multi.new()
-    |> Multi.insert(:owner, owner_changeset)
-    |> Multi.run(:password_identity, fn %{owner: owner} ->
-      owner
-      |> Ecto.build_assoc(:password_identity)
-      |> PasswordIdentity.insert(%{password: password})
+    repo.transaction(fn ->
+      with {:ok, owner} <- %Owner{} |> Owner.insert(%{name: name, email: email}),
+           identity = owner |> Ecto.build_assoc(:password_identity),
+           {:ok, password_identity} <- identity |> PasswordIdentity.insert(%{password: password}) do
+        %Owner{owner | password_identity: password_identity}
+      else
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
     end)
-    |> repo.transaction()
-    |> case do
-      {:ok, %{owner: owner, password_identity: password_identity}} ->
-        {:ok, %Owner{owner | password_identity: password_identity}}
-      {:error, _, changeset, _} ->
-        {:error, changeset}
-    end
   end
 
   def authenticate(email, password) do

@@ -6,7 +6,8 @@ defmodule APIWeb.Schema.ShopQueryTest do
   describe "querying a shop" do
     setup %{conn: conn} do
       params = %{owner: Fixtures.owner(), shop:  Fixtures.shop()}
-      {:ok, %{owner: owner, shop: shop}} = Core.signup(params)
+      {:ok, %{owner: owner, shop: shop}} = Accounts.signup(params)
+      {:ok, _} = Shops.insert_customer(shop, Fixtures.customer())
       {:ok, _} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
       {:ok, _} = Shops.insert_subscription_product(shop, Fixtures.subscription_product())
       {:ok, token} = Accounts.token_from_owner(owner)
@@ -25,6 +26,15 @@ defmodule APIWeb.Schema.ShopQueryTest do
             shop {
               id
               name
+              customers (first: 10) {
+                edges {
+                  cursor
+                  node {
+                    name
+                    email
+                  }
+                }
+              }
               onetime_products (first: 10) {
                 edges {
                   cursor

@@ -13,6 +13,13 @@ defmodule Core.ShopsTest do
     %{shop: shop}
   end
 
+  def insert_customer(%{shop: shop}) do
+    attrs = Fixtures.customer() |> Map.put(:addresses, [Fixtures.address()])
+    {:ok, customer} = Shops.insert_customer(shop, attrs)
+
+    %{customer: customer}
+  end
+
   describe "find_shop/1" do
     setup [:insert_owner, :insert_shop]
 
@@ -59,6 +66,41 @@ defmodule Core.ShopsTest do
         |> Accounts.insert_owner()
 
       {:error, :not_found} = Shops.update_shop(owner, Fixtures.shop())
+    end
+  end
+
+  describe "inserting customers" do
+    setup [:insert_owner, :insert_shop]
+
+    test "returns error when email is already registered", %{shop: shop} do
+      params = Fixtures.customer()
+
+      assert {:ok, _customer} = Shops.insert_customer(shop, params)
+      assert {:error, _changeset} = Shops.insert_customer(shop, params)
+    end
+
+    test "returns changeset when invalid params given", %{shop: shop} do
+      params = Fixtures.customer() |> Map.put(:name, "")
+
+      assert {:error, _} = Shops.insert_customer(shop, params)
+
+      addresses = Fixtures.address() |> Map.put(:name, "") |> List.wrap()
+      params = Fixtures.customer() |> Map.put(:addresses, addresses)
+
+      assert {:error, _} = Shops.insert_customer(shop, params)
+    end
+  end
+
+  describe "update customer addresses" do
+    setup [:insert_owner, :insert_shop, :insert_customer]
+
+    test "can update existing one", %{customer: customer} do
+      customer = customer |> DB.replica().preload(:addresses)
+      address = customer.addresses |> List.first
+
+      {:ok, address} = Shops.update_address(customer, address.id, %{country: "US"})
+
+      assert address.country == "US"
     end
   end
 end

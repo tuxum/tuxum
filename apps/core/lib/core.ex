@@ -1,14 +1,10 @@
 defmodule Core do
+  defmacro __using__(_) do
+    quote do
+      import Ecto
+      import Ecto.Query
 
-  alias Core.{Shops, Accounts}
-
-  def signup(%{owner: owner_params, shop: shop_params}) do
-    with {:ok, owner} <- Accounts.insert_owner(owner_params),
-         {:ok, shop} <- Shops.insert_shop(owner, shop_params) do
-      {:ok, %{owner: owner, shop: shop}}
-    else
-      _ ->
-        {:error, "Something went wrong"}
+      import Core.Helpers
     end
   end
 end

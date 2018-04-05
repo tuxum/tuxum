@@ -24,7 +24,7 @@ defmodule APIWeb.Schema.OwnerMutationTest do
       assert %{"authenticate" => %{"token" => _}} = graphql_data(conn, query, variables)
     end
 
-    test "returns token if email/pass are not correct", %{conn: conn, params: params} do
+    test "does not return token if email/pass are not correct", %{conn: conn, params: params} do
       query = """
         mutation ($input: AuthenticateInput!) {
           authenticate(input: $input) {
@@ -37,6 +37,32 @@ defmodule APIWeb.Schema.OwnerMutationTest do
       [error | _] = graphql_errors(conn, query, variables)
 
       assert %{"message" => "Unauthorized"} = error
+    end
+  end
+
+  describe "signup mutation" do
+    setup do
+      params = Fixtures.owner()
+      {:ok, owner} = Accounts.insert_owner(params)
+
+      %{owner: owner, params: params}
+    end
+
+    test "return error if email is already taken", %{conn: conn, params: params} do
+      query = """
+        mutation ($input: SignupInput!) {
+          signup(input: $input) {
+            owner {
+              name
+            }
+          }
+        }
+      """
+      variables = %{input: %{owner: params, shop: Fixtures.shop()}}
+
+      [error | _] = graphql_errors(conn, query, variables)
+
+      assert %{"attribute" => "email"} = error
     end
   end
 end
