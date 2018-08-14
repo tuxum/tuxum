@@ -9,7 +9,7 @@ defmodule API.Mixfile do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       start_permanent: Mix.env == :prod,
@@ -36,10 +36,11 @@ defmodule API.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.0"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:gettext, "~> 0.11"},
+      {:phoenix, "~> 1.3"},
+      {:phoenix_pubsub, "~> 1.1"},
+      {:gettext, "~> 0.15"},
       {:cowboy, "~> 1.0"},
+      {:jason, "~> 1.1"},
 
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},

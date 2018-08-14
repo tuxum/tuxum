@@ -9,7 +9,7 @@ defmodule DB.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()
@@ -28,7 +28,8 @@ defmodule DB.MixProject do
   defp deps do
     [
       {:ecto, "~> 2.2"},
-      {:postgrex, "~> 0.11"}
+      {:postgrex, "~> 0.13"},
+      {:jason, "~> 1.1"}
     ]
   end
 
@@ -36,7 +37,7 @@ defmodule DB.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

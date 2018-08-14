@@ -9,7 +9,7 @@ defmodule Core.MixProject do
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -32,16 +32,16 @@ defmodule Core.MixProject do
   defp deps do
     [
       {:ecto, "~> 2.2"},
-      {:comeonin, "~> 4.0"},
+      {:comeonin, "~> 4.1"},
       {:pbkdf2_elixir, "~> 0.12"},
       {:joken, "~> 1.5"},
-      {:poison, "~> 3.1"},
+      {:jason, "~> 1.1"},
       {:decimal, "~> 1.5"},
-      {:ex_money, "~> 2.2"},
+      {:ex_money, "~> 2.7"},
 
       {:db, in_umbrella: true},
 
-      {:faker, "~> 0.9", only: :test}
+      {:faker, "~> 0.10", only: :test}
     ]
   end
 
