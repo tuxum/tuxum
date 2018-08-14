@@ -24,7 +24,7 @@ defmodule Tuxum.MixProject do
   defp aliases do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate",  "run apps/db/priv/repo/seeds.exs"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "run apps/db/priv/repo/seeds.exs", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "run apps/db/priv/repo/seeds.exs", "test"]
     ]
   end
 end
