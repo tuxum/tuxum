@@ -41,7 +41,7 @@ defmodule Core.MixProject do
 
       {:db, in_umbrella: true},
 
-      {:faker, "~> 0.9", only: :test}
+      {:faker, "~> 0.10", only: :test}
     ]
   end
 
