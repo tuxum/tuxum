@@ -35,7 +35,6 @@ defmodule Core.MixProject do
       {:comeonin, "~> 4.1"},
       {:pbkdf2_elixir, "~> 0.12"},
       {:joken, "~> 1.5"},
-      {:poison, "~> 3.1"},
       {:decimal, "~> 1.5"},
       {:ex_money, "~> 2.2"},
 
