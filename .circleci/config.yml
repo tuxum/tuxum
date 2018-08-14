@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/elixir:1.6
+      - image: circleci/elixir:1.7
         environment:
           - MIX_ENV: test
       - image: circleci/postgres:10.2-alpine
