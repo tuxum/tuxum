@@ -32,7 +32,7 @@ defmodule Core.MixProject do
   defp deps do
     [
       {:ecto, "~> 2.2"},
-      {:comeonin, "~> 4.0"},
+      {:comeonin, "~> 4.1"},
       {:pbkdf2_elixir, "~> 0.12"},
       {:joken, "~> 1.5"},
       {:poison, "~> 3.1"},

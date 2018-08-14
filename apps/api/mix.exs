@@ -37,7 +37,7 @@ defmodule API.Mixfile do
   defp deps do
     [
       {:phoenix, "~> 1.3"},
-      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_pubsub, "~> 1.1"},
       {:gettext, "~> 0.15"},
       {:cowboy, "~> 1.0"},
 
