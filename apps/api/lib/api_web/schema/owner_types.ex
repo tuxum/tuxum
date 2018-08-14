@@ -15,11 +15,12 @@ defmodule APIWeb.Schema.OwnerTypes do
   end
 
   object :owner_mutations do
-    payload field :authenticate do
+    payload field(:authenticate) do
       input do
         field :email, non_null(:string)
         field :password, non_null(:string)
       end
+
       output do
         field :token, :string
       end
@@ -27,11 +28,12 @@ defmodule APIWeb.Schema.OwnerTypes do
       resolve &APIWeb.OwnerResolver.authenticate/2
     end
 
-    payload field :signup do
+    payload field(:signup) do
       input do
         field :owner, non_null(:signup_input_owner)
         field :shop, non_null(:signup_input_shop)
       end
+
       output do
         field :owner, non_null(:owner)
       end

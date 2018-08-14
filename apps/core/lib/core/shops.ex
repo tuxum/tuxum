@@ -5,7 +5,16 @@ defmodule Core.Shops do
 
   use Core
 
-  alias Core.Shops.{Shop, Customer, Address, CustomerAddress, OnetimeProduct, SubscriptionProduct, DeliveryInterval}
+  alias Core.Shops.{
+    Shop,
+    Customer,
+    Address,
+    CustomerAddress,
+    OnetimeProduct,
+    SubscriptionProduct,
+    DeliveryInterval
+  }
+
   alias Core.Accounts.{Owner}
 
   def find_shop(%Owner{id: id}) do
@@ -35,7 +44,8 @@ defmodule Core.Shops do
   end
 
   def list_customers(shop = %Shop{}, _opts \\ %{}) do
-    customers = shop
+    customers =
+      shop
       |> assoc(:customers)
       |> DB.replica().all()
 
@@ -53,7 +63,10 @@ defmodule Core.Shops do
       with {:ok, customer} <- Customer.insert(customer, attrs) do
         Enum.each(address_attrs, fn address ->
           with {:ok, address} <- %Address{} |> Address.insert(address),
-               customer_address = %CustomerAddress{customer_id: customer.id, address_id: address.id},
+               customer_address = %CustomerAddress{
+                 customer_id: customer.id,
+                 address_id: address.id
+               },
                {:ok, _} <- CustomerAddress.insert(customer_address, %{}) do
             nil
           else
@@ -97,7 +110,8 @@ defmodule Core.Shops do
   end
 
   def list_onetime_products(shop = %Shop{}, _opts \\ %{}) do
-    products = shop
+    products =
+      shop
       |> assoc(:onetime_products)
       |> DB.replica().all()
 
@@ -126,7 +140,8 @@ defmodule Core.Shops do
   end
 
   def list_subscription_products(shop, _opts \\ %{}) do
-    products = shop
+    products =
+      shop
       |> assoc(:subscription_products)
       |> DB.replica().all()
 
@@ -157,11 +172,13 @@ defmodule Core.Shops do
   end
 
   defp do_transform_money({key, %{currency: currency, amount: amount}}) do
-    {:ok, money} = %{"currency" => currency, "amount" => amount}
-      |> Money.Ecto.Map.Type.load
+    {:ok, money} =
+      %{"currency" => currency, "amount" => amount}
+      |> Money.Ecto.Map.Type.load()
 
     {key, money}
   end
+
   defp do_transform_money(pair), do: pair
 
   def find_delivery_interval(%SubscriptionProduct{delivery_interval_id: id}) do

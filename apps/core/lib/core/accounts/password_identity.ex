@@ -25,6 +25,7 @@ defmodule Core.Accounts.PasswordIdentity do
     case get_change(changeset, :password) do
       nil ->
         changeset
+
       password ->
         changeset |> put_change(:digest, Comeonin.Pbkdf2.hashpwsalt(password))
     end

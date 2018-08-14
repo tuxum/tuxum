@@ -43,7 +43,7 @@ if Mix.env() == :test do
       %{
         name: Faker.Name.name(),
         email: Faker.Internet.email(),
-        addresses: [address()],
+        addresses: [address()]
       }
     end
 
@@ -57,7 +57,7 @@ if Mix.env() == :test do
         line1: Faker.Address.street_address(),
         line2: Faker.Address.secondary_address(),
         line3: nil,
-        phone: Faker.Phone.EnUs.phone(),
+        phone: Faker.Phone.EnUs.phone()
       }
     end
   end

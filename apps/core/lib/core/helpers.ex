@@ -8,9 +8,9 @@ defmodule Core.Helpers do
     |> case do
       nil ->
         {:error, :not_found}
+
       resource ->
         {:ok, resource}
     end
   end
-
 end

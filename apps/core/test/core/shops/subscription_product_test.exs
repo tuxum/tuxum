@@ -13,7 +13,8 @@ defmodule Core.Shops.SubscriptionProductTest do
     test "puts default setup_fee", %{product: product} do
       params = @params |> Map.put(:setup_fee, nil)
 
-      setup_fee = product
+      setup_fee =
+        product
         |> SubscriptionProduct.insert_changeset(params)
         |> Ecto.Changeset.get_change(:setup_fee)
 
@@ -24,7 +25,8 @@ defmodule Core.Shops.SubscriptionProductTest do
     test "puts default shipping_fee", %{product: product} do
       params = @params |> Map.put(:shipping_fee, nil)
 
-      shipping_fee = product
+      shipping_fee =
+        product
         |> SubscriptionProduct.insert_changeset(params)
         |> Ecto.Changeset.get_change(:shipping_fee)
 
@@ -33,7 +35,8 @@ defmodule Core.Shops.SubscriptionProductTest do
     end
 
     test "errors when currencies don't match", %{product: product} do
-      params = @params
+      params =
+        @params
         |> Map.put(:price, Money.new(:JPY, 5000))
         |> Map.put(:shipping_fee, Money.new(:USD, 5))
 

@@ -62,7 +62,8 @@ defmodule Core.ShopsTest do
     end
 
     test "returns error if the owner doesn't have shop" do
-      {:ok, owner} = Fixtures.owner()
+      {:ok, owner} =
+        Fixtures.owner()
         |> Accounts.insert_owner()
 
       {:error, :not_found} = Shops.update_shop(owner, Fixtures.shop())
@@ -96,7 +97,7 @@ defmodule Core.ShopsTest do
 
     test "can update existing one", %{customer: customer} do
       customer = customer |> DB.replica().preload(:addresses)
-      address = customer.addresses |> List.first
+      address = customer.addresses |> List.first()
 
       {:ok, address} = Shops.update_address(customer, address.id, %{country: "US"})
 

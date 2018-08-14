@@ -19,6 +19,7 @@ defmodule APIWeb.Schema.OwnerMutationTest do
           }
         }
       """
+
       variables = %{input: Map.take(params, [:email, :password])}
 
       assert %{"authenticate" => %{"token" => _}} = graphql_data(conn, query, variables)
@@ -32,6 +33,7 @@ defmodule APIWeb.Schema.OwnerMutationTest do
           }
         }
       """
+
       variables = %{input: %{email: params.email, password: "invalid"}}
 
       [error | _] = graphql_errors(conn, query, variables)
@@ -58,6 +60,7 @@ defmodule APIWeb.Schema.OwnerMutationTest do
           }
         }
       """
+
       variables = %{input: %{owner: params, shop: Fixtures.shop()}}
 
       [error | _] = graphql_errors(conn, query, variables)

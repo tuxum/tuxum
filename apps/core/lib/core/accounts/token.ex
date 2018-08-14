@@ -1,23 +1,23 @@
 defmodule Core.Accounts.Token do
   def to_owner(token) do
     token
-    |> Joken.token
-    |> Joken.with_validation("exp", &(&1 > Joken.current_time))
+    |> Joken.token()
+    |> Joken.with_validation("exp", &(&1 > Joken.current_time()))
     |> Joken.with_signer(Joken.hs512(secret()))
-    |> Joken.verify
-    |> Joken.get_claims
+    |> Joken.verify()
+    |> Joken.get_claims()
     |> claim_to_owner()
   end
 
   def from_owner(owner) do
-    a_month_later = Joken.current_time + (60 * 60 * 24 * 30)
+    a_month_later = Joken.current_time() + 60 * 60 * 24 * 30
 
     %{owner_id: owner.id}
-    |> Joken.token
+    |> Joken.token()
     |> Joken.with_exp(a_month_later)
     |> Joken.with_signer(Joken.hs512(secret()))
-    |> Joken.sign
-    |> Joken.get_compact
+    |> Joken.sign()
+    |> Joken.get_compact()
   end
 
   defp claim_to_owner(%{"owner_id" => owner_id}) do

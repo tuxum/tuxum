@@ -7,6 +7,7 @@ defmodule APIWeb.AuthMiddleware do
       %{current_owner: nil} ->
         resolution
         |> Absinthe.Resolution.put_result({:error, "unauthorized"})
+
       _ ->
         resolution
     end

@@ -1,7 +1,7 @@
 defmodule APIWeb.Schema.ShopMutationTest do
   use APIWeb.ConnCase, async: true
 
-  alias Core.{Accounts, Shops,  Fixtures}
+  alias Core.{Accounts, Shops, Fixtures}
 
   describe "updateShop mutation" do
     setup %{conn: conn} do
@@ -23,6 +23,7 @@ defmodule APIWeb.Schema.ShopMutationTest do
           }
         }
       """
+
       variables = %{input: params}
 
       data = graphql_data(conn, query, variables)

@@ -26,9 +26,11 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
           }
         }
       """
+
       variables = %{input: params}
 
-      data = graphql_data(conn, query, variables)
+      data =
+        graphql_data(conn, query, variables)
         |> Map.get("createOnetimeProduct")
         |> Map.get("onetimeProduct")
 
@@ -60,9 +62,11 @@ defmodule APIWeb.Schema.OnetimeProductMutationTest do
           }
         }
       """
+
       variables = %{input: Map.put(params, :onetime_product_id, product.id)}
 
-      data = graphql_data(conn, query, variables)
+      data =
+        graphql_data(conn, query, variables)
         |> Map.get("updateOnetimeProduct")
         |> Map.get("onetimeProduct")
 
