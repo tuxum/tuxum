@@ -38,7 +38,7 @@ defmodule API.Mixfile do
     [
       {:phoenix, "~> 1.3"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:gettext, "~> 0.11"},
+      {:gettext, "~> 0.15"},
       {:cowboy, "~> 1.0"},
 
       {:absinthe, "~> 1.4"},
