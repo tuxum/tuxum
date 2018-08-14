@@ -37,7 +37,7 @@ defmodule Core.MixProject do
       {:joken, "~> 1.5"},
       {:jason, "~> 1.1"},
       {:decimal, "~> 1.5"},
-      {:ex_money, "~> 2.2"},
+      {:ex_money, "~> 2.7"},
 
       {:db, in_umbrella: true},
 
