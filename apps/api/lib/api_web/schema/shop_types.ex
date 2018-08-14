@@ -15,12 +15,13 @@ defmodule APIWeb.Schema.ShopTypes do
   end
 
   object :shop_mutations do
-    payload field :update_shop do
+    payload field(:update_shop) do
       middleware APIWeb.AuthMiddleware
 
       input do
         field :name, non_null(:string)
       end
+
       output do
         field :shop, non_null(:shop)
       end

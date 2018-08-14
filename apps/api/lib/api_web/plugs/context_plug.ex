@@ -4,7 +4,7 @@ defmodule APIWeb.ContextPlug do
   import Plug.Conn
 
   defmodule Context do
-    defstruct [current_owner: nil, current_shop: nil]
+    defstruct current_owner: nil, current_shop: nil
   end
 
   @impl Plug

@@ -60,6 +60,7 @@ defmodule Core.Accounts do
     case repo.preload(owner, :password_identity) do
       %Owner{password_identity: identity = %PasswordIdentity{}} ->
         Comeonin.Pbkdf2.checkpw(password, identity.digest)
+
       _ ->
         false
     end

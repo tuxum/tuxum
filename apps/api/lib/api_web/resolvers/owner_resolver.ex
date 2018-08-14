@@ -7,6 +7,7 @@ defmodule APIWeb.OwnerResolver do
     case Accounts.signup(input) do
       {:ok, changes} ->
         {:ok, changes}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end
@@ -17,6 +18,7 @@ defmodule APIWeb.OwnerResolver do
       {:ok, owner} ->
         {:ok, token} = Accounts.token_from_owner(owner)
         {:ok, %{token: token}}
+
       :error ->
         {:error, translate_errors(:unauthorized)}
     end

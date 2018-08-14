@@ -19,6 +19,7 @@ defmodule APIWeb.SubscriptionProductResolver do
     case Shops.insert_subscription_product(shop, input) do
       {:ok, product} ->
         {:ok, %{subscription_product: product}}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end
@@ -31,6 +32,7 @@ defmodule APIWeb.SubscriptionProductResolver do
     case Shops.update_subscription_product(shop, product_id, params) do
       {:ok, product} ->
         {:ok, %{subscription_product: product}}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end

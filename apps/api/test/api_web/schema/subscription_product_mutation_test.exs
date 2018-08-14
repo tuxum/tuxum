@@ -26,9 +26,11 @@ defmodule APIWeb.Schema.SubscriptionProductMutationTest do
           }
         }
       """
+
       variables = %{input: params}
 
-      data = graphql_data(conn, query, variables)
+      data =
+        graphql_data(conn, query, variables)
         |> Map.get("createSubscriptionProduct")
         |> Map.get("subscriptionProduct")
 
@@ -49,7 +51,12 @@ defmodule APIWeb.Schema.SubscriptionProductMutationTest do
       %{conn: conn, shop: shop, product: product, params: Fixtures.subscription_product()}
     end
 
-    test "updates subscription product", %{conn: conn, shop: shop, product: product, params: params} do
+    test "updates subscription product", %{
+      conn: conn,
+      shop: shop,
+      product: product,
+      params: params
+    } do
       query = """
         mutation ($input: UpdateSubscriptionProductInput!) {
           updateSubscriptionProduct(input: $input) {
@@ -60,9 +67,11 @@ defmodule APIWeb.Schema.SubscriptionProductMutationTest do
           }
         }
       """
+
       variables = %{input: Map.put(params, :subscription_product_id, product.id)}
 
-      data = graphql_data(conn, query, variables)
+      data =
+        graphql_data(conn, query, variables)
         |> Map.get("updateSubscriptionProduct")
         |> Map.get("subscriptionProduct")
 

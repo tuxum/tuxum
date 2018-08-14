@@ -19,6 +19,7 @@ defmodule APIWeb.OnetimeProductResolver do
     case Shops.insert_onetime_product(shop, input) do
       {:ok, product} ->
         {:ok, %{onetime_product: product}}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end
@@ -31,6 +32,7 @@ defmodule APIWeb.OnetimeProductResolver do
     case Shops.update_onetime_product(shop, product_id, params) do
       {:ok, product} ->
         {:ok, %{onetime_product: product}}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end

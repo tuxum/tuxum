@@ -3,7 +3,7 @@ defmodule APIWeb.Schema.SubscriptionProductTypes do
   use Absinthe.Relay.Schema.Notation, :modern
 
   object :subscription_product_mutations do
-    payload field :create_subscription_product do
+    payload field(:create_subscription_product) do
       middleware APIWeb.AuthMiddleware
 
       input do
@@ -14,6 +14,7 @@ defmodule APIWeb.Schema.SubscriptionProductTypes do
         field :shipping_fee, :money_with_currency
         field :delivery_interval_id, non_null(:id)
       end
+
       output do
         field :subscription_product, non_null(:subscription_product)
       end
@@ -21,7 +22,7 @@ defmodule APIWeb.Schema.SubscriptionProductTypes do
       resolve &APIWeb.SubscriptionProductResolver.create_subscription_product/2
     end
 
-    payload field :update_subscription_product do
+    payload field(:update_subscription_product) do
       middleware APIWeb.AuthMiddleware
 
       input do
@@ -33,6 +34,7 @@ defmodule APIWeb.Schema.SubscriptionProductTypes do
         field :shipping_fee, :money_with_currency
         field :delivery_interval_id, non_null(:id)
       end
+
       output do
         field :subscription_product, non_null(:subscription_product)
       end

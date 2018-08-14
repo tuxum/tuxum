@@ -26,9 +26,11 @@ defmodule APIWeb.Schema.CustomerMutationTest do
           }
         }
       """
+
       variables = %{input: params}
 
-      data = graphql_data(conn, query, variables)
+      data =
+        graphql_data(conn, query, variables)
         |> Map.get("createCustomer")
         |> Map.get("customer")
 
@@ -62,9 +64,11 @@ defmodule APIWeb.Schema.CustomerMutationTest do
           }
         }
       """
+
       variables = %{input: Map.put(params, :customer_id, customer.id)}
 
-      data = graphql_data(conn, query, variables)
+      data =
+        graphql_data(conn, query, variables)
         |> Map.get("updateCustomer")
         |> Map.get("customer")
 

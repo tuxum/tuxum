@@ -7,6 +7,7 @@ defmodule APIWeb.ShopResolver do
     case resolution.context do
       %{current_shop: shop} ->
         {:ok, shop}
+
       _ ->
         {:error, translate_errors(:not_found)}
     end
@@ -18,6 +19,7 @@ defmodule APIWeb.ShopResolver do
     case Shops.insert_shop(current_owner, input) do
       {:ok, shop} ->
         {:ok, %{shop: shop}}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end
@@ -29,6 +31,7 @@ defmodule APIWeb.ShopResolver do
     case Shops.update_shop(current_owner, input) do
       {:ok, shop} ->
         {:ok, %{shop: shop}}
+
       {:error, changeset} ->
         {:error, translate_errors(changeset)}
     end

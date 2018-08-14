@@ -10,7 +10,7 @@ defmodule Core.MixProject do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.7",
-      elixirc_paths: elixirc_paths(Mix.env),
+      elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases()
@@ -26,7 +26,7 @@ defmodule Core.MixProject do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
@@ -38,9 +38,7 @@ defmodule Core.MixProject do
       {:jason, "~> 1.1"},
       {:decimal, "~> 1.5"},
       {:ex_money, "~> 2.7"},
-
       {:db, in_umbrella: true},
-
       {:faker, "~> 0.10", only: :test}
     ]
   end
