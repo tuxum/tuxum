@@ -10,7 +10,8 @@ defmodule APIWeb.Schema.SubscriptionProductMutationTest do
       {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
-      params = Fixtures.subscription_product()
+      delivery_interval = Shops.delivery_intervals() |> List.first
+      params = Fixtures.subscription_product(delivery_interval_id: delivery_interval.id)
 
       %{conn: conn, owner: owner, shop: shop, params: params}
     end
@@ -44,11 +45,15 @@ defmodule APIWeb.Schema.SubscriptionProductMutationTest do
     setup %{conn: conn} do
       {:ok, owner} = Fixtures.owner() |> Accounts.insert_owner()
       {:ok, shop} = Shops.insert_shop(owner, Fixtures.shop())
-      {:ok, product} = Shops.insert_subscription_product(shop, Fixtures.subscription_product())
+
+      delivery_interval = Shops.delivery_intervals() |> List.first
+      product_params = Fixtures.subscription_product(delivery_interval_id: delivery_interval.id)
+      {:ok, product} = Shops.insert_subscription_product(shop, product_params)
+
       {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn |> put_req_header("authorization", "Bearer #{token}")
 
-      %{conn: conn, shop: shop, product: product, params: Fixtures.subscription_product()}
+      %{conn: conn, shop: shop, product: product, params: product_params}
     end
 
     test "updates subscription product", %{
