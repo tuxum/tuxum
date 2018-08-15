@@ -1,6 +1,5 @@
 defmodule Core.Accounts.Owner do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Core.Schema
 
   alias Core.Accounts.PasswordIdentity
   alias Core.Shops.Shop

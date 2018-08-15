@@ -5,49 +5,54 @@ if Mix.env() == :test do
     Available only :test environment
     """
 
-    def owner do
+    def owner(attrs \\ %{}) do
       %{
         name: Faker.Name.name(),
         email: Faker.Internet.email(),
         password: Faker.Util.format("%10a")
       }
+      |> merge(attrs)
     end
 
-    def shop do
+    def shop(attrs \\ %{}) do
       %{
         name: Faker.Company.name()
       }
+      |> merge(attrs)
     end
 
-    def onetime_product do
+    def onetime_product(attrs \\ %{}) do
       %{
         name: Faker.Commerce.product_name(),
         is_public: true,
         price: %{currency: "USD", amount: "100"},
         shipping_fee: %{currency: "USD", amount: "5"}
       }
+      |> merge(attrs)
     end
 
-    def subscription_product do
+    def subscription_product(attrs \\ %{}) do
       %{
         name: Faker.Commerce.product_name(),
         is_public: true,
         price: %{currency: "USD", amount: "100"},
         setup_fee: %{currency: "USD", amount: "10"},
         shipping_fee: %{currency: "USD", amount: "5"},
-        delivery_interval_id: 1
+        delivery_interval_id: nil
       }
+      |> merge(attrs)
     end
 
-    def customer do
+    def customer(attrs \\ %{}) do
       %{
         name: Faker.Name.name(),
         email: Faker.Internet.email(),
         addresses: [address()]
       }
+      |> merge(attrs)
     end
 
-    def address do
+    def address(attrs \\ %{}) do
       %{
         label: "Home",
         name: Faker.Name.name(),
@@ -59,6 +64,15 @@ if Mix.env() == :test do
         line3: nil,
         phone: Faker.Phone.EnUs.phone()
       }
+      |> merge(attrs)
+    end
+
+    defp merge(base, attrs) when is_map(attrs) do
+      Map.merge(base, attrs)
+    end
+
+    defp merge(base, attrs) do
+      Map.merge(base, Enum.into(attrs, %{}))
     end
   end
 end

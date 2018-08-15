@@ -2,10 +2,11 @@ defmodule DB.Repo.Migrations.AddCustomersTable do
   use Ecto.Migration
 
   def change do
-    create table(:customers) do
+    create table(:customers, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :name, :string, null: false
       add :email, :string, null: false
-      add :shop_id, references(:shops), null: false
+      add :shop_id, references(:shops, type: :uuid), null: false
 
       timestamps()
     end

@@ -165,6 +165,10 @@ defmodule Core.Shops do
     end
   end
 
+  def delivery_intervals do
+    DeliveryInterval |> DB.replica().all()
+  end
+
   defp transform_money(attrs) do
     attrs
     |> Enum.map(&do_transform_money/1)

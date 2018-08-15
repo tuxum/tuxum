@@ -1,6 +1,5 @@
 defmodule Core.Shops.Shop do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Core.Schema
 
   alias Core.Accounts.Owner
   alias Core.Shops.{Customer, OnetimeProduct, SubscriptionProduct}

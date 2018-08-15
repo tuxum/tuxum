@@ -1,9 +1,11 @@
 defmodule Core.Shops.SubscriptionProductTest do
   use Core.DataCase, async: true
 
+  alias Core.Shops
   alias Core.Shops.SubscriptionProduct
 
-  @params Core.Fixtures.subscription_product()
+  @delivery_interval Shops.delivery_intervals() |> List.first
+  @params Core.Fixtures.subscription_product(delivery_interval_id: @delivery_interval.id)
 
   describe "insert_changeset/2" do
     setup do

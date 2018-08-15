@@ -1,5 +1,5 @@
 defmodule Core.Shops.DeliveryInterval do
-  use Ecto.Schema
+  use Core.Schema
 
   schema "delivery_intervals" do
     field :name, :string
