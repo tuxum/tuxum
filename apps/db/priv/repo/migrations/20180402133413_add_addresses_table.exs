@@ -2,7 +2,8 @@ defmodule DB.Repo.Migrations.AddAddressesTable do
   use Ecto.Migration
 
   def change do
-    create table(:addresses) do
+    create table(:addresses, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :label, :string
       add :name, :string, null: false
       add :postal_code, :string, null: false

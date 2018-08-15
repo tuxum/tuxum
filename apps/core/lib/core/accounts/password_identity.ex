@@ -1,6 +1,5 @@
 defmodule Core.Accounts.PasswordIdentity do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Core.Schema
 
   alias Core.Accounts.Owner
 

@@ -2,9 +2,10 @@ defmodule DB.Repo.Migrations.AddShopsTable do
   use Ecto.Migration
 
   def change do
-    create table(:shops) do
+    create table(:shops, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :name, :string, null: false
-      add :owner_id, references(:owners), null: false
+      add :owner_id, references(:owners, type: :uuid), null: false
 
       timestamps()
     end

@@ -1,6 +1,5 @@
 defmodule Core.Shops.Address do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Core.Schema
 
   schema "addresses" do
     field :label, :string

@@ -1,6 +1,5 @@
 defmodule Core.Shops.OnetimeProduct do
-  use Ecto.Schema
-  import Ecto.Changeset
+  use Core.Schema
 
   alias Core.Shops.Shop
 
