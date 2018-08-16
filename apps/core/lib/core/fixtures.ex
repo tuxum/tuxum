@@ -35,8 +35,7 @@ if Mix.env() == :test do
         name: Faker.Commerce.product_name(),
         is_public: true,
         price: %{currency: "USD", amount: "100"},
-        setup_fee: %{currency: "USD", amount: "10"},
-        delivery_interval_id: nil
+        setup_fee: %{currency: "USD", amount: "10"}
       }
       |> merge(attrs)
     end

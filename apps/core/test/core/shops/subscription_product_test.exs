@@ -4,8 +4,7 @@ defmodule Core.Shops.SubscriptionProductTest do
   alias Core.Shops
   alias Core.Shops.SubscriptionProduct
 
-  @delivery_interval Shops.delivery_intervals() |> List.first
-  @params Core.Fixtures.subscription_product(delivery_interval_id: @delivery_interval.id)
+  @params Core.Fixtures.subscription_product()
 
   describe "insert_changeset/2" do
     setup do
@@ -49,15 +48,6 @@ defmodule Core.Shops.SubscriptionProductTest do
 
       assert changeset.valid? == false
       assert changeset.errors |> Keyword.has_key?(:setup_fee)
-    end
-
-    test "errors when delivery_interval_id is missing", %{product: product} do
-      params = @params |> Map.delete(:delivery_interval_id)
-
-      changeset = SubscriptionProduct.insert_changeset(product, params)
-
-      assert changeset.valid? == false
-      assert changeset.errors |> Keyword.has_key?(:delivery_interval_id)
     end
   end
 end

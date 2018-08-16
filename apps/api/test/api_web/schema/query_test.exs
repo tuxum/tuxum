@@ -9,10 +9,7 @@ defmodule APIWeb.Schema.ShopQueryTest do
       {:ok, %{owner: owner, shop: shop}} = Accounts.signup(params)
       {:ok, _} = Shops.insert_customer(shop, Fixtures.customer())
       {:ok, _} = Shops.insert_onetime_product(shop, Fixtures.onetime_product())
-
-      delivery_interval = Shops.delivery_intervals() |> List.first
-      product_params = Fixtures.subscription_product(delivery_interval_id: delivery_interval.id)
-      {:ok, _} = Shops.insert_subscription_product(shop, product_params)
+      {:ok, _} = Shops.insert_subscription_product(shop, Fixtures.subscription_product())
 
       {:ok, token} = Accounts.token_from_owner(owner)
       conn = conn |> put_req_header("authorization", "Bearer #{token}")

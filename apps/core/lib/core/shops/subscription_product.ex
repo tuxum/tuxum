@@ -1,7 +1,7 @@
 defmodule Core.Shops.SubscriptionProduct do
   use Core.Schema
 
-  alias Core.Shops.{Shop, DeliveryInterval}
+  alias Core.Shops.{Shop}
 
   schema "subscription_products" do
     field :name, :string
@@ -10,17 +10,15 @@ defmodule Core.Shops.SubscriptionProduct do
     field :setup_fee, Money.Ecto.Composite.Type
 
     belongs_to :shop, Shop
-    belongs_to :delivery_interval, DeliveryInterval
 
     timestamps()
   end
 
   def insert_changeset(subscription_product, attrs \\ %{}) do
     subscription_product
-    |> cast(attrs, ~w[name is_public price setup_fee delivery_interval_id])
-    |> validate_required(~w[name is_public price delivery_interval_id]a)
+    |> cast(attrs, ~w[name is_public price setup_fee])
+    |> validate_required(~w[name is_public price]a)
     |> assoc_constraint(:shop)
-    |> assoc_constraint(:delivery_interval)
     |> set_default_setup_fee()
     |> price_should_be_positive()
     |> setup_fee_should_be_positive()
@@ -29,10 +27,9 @@ defmodule Core.Shops.SubscriptionProduct do
 
   def update_changeset(subscription_product, attrs \\ %{}) do
     subscription_product
-    |> cast(attrs, ~w[name is_public price setup_fee delivery_interval_id])
-    |> validate_required(~w[name is_public price delivery_interval_id]a)
+    |> cast(attrs, ~w[name is_public price setup_fee])
+    |> validate_required(~w[name is_public price]a)
     |> assoc_constraint(:shop)
-    |> assoc_constraint(:delivery_interval)
     |> price_should_be_positive()
     |> setup_fee_should_be_positive()
     |> currencies_should_be_same()

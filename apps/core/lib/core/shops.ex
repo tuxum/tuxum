@@ -184,8 +184,4 @@ defmodule Core.Shops do
   end
 
   defp do_transform_money(pair), do: pair
-
-  def find_delivery_interval(%SubscriptionProduct{delivery_interval_id: id}) do
-    DeliveryInterval |> find_by(id: id)
-  end
 end
