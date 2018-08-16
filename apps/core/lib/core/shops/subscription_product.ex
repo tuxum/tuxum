@@ -8,7 +8,6 @@ defmodule Core.Shops.SubscriptionProduct do
     field :is_public, :boolean
     field :price, Money.Ecto.Composite.Type
     field :setup_fee, Money.Ecto.Composite.Type
-    field :shipping_fee, Money.Ecto.Composite.Type
 
     belongs_to :shop, Shop
     belongs_to :delivery_interval, DeliveryInterval
@@ -18,27 +17,24 @@ defmodule Core.Shops.SubscriptionProduct do
 
   def insert_changeset(subscription_product, attrs \\ %{}) do
     subscription_product
-    |> cast(attrs, ~w[name is_public price setup_fee shipping_fee delivery_interval_id])
+    |> cast(attrs, ~w[name is_public price setup_fee delivery_interval_id])
     |> validate_required(~w[name is_public price delivery_interval_id]a)
     |> assoc_constraint(:shop)
     |> assoc_constraint(:delivery_interval)
-    |> set_default_shipping_fee()
     |> set_default_setup_fee()
     |> price_should_be_positive()
     |> setup_fee_should_be_positive()
-    |> shipping_fee_should_be_positive()
     |> currencies_should_be_same()
   end
 
   def update_changeset(subscription_product, attrs \\ %{}) do
     subscription_product
-    |> cast(attrs, ~w[name is_public price setup_fee shipping_fee delivery_interval_id])
+    |> cast(attrs, ~w[name is_public price setup_fee delivery_interval_id])
     |> validate_required(~w[name is_public price delivery_interval_id]a)
     |> assoc_constraint(:shop)
     |> assoc_constraint(:delivery_interval)
     |> price_should_be_positive()
     |> setup_fee_should_be_positive()
-    |> shipping_fee_should_be_positive()
     |> currencies_should_be_same()
   end
 
@@ -48,10 +44,6 @@ defmodule Core.Shops.SubscriptionProduct do
 
   defp setup_fee_should_be_positive(changeset) do
     should_be_positive(changeset, :setup_fee)
-  end
-
-  defp shipping_fee_should_be_positive(changeset) do
-    should_be_positive(changeset, :shipping_fee)
   end
 
   defp should_be_positive(changeset, column) do
@@ -67,23 +59,16 @@ defmodule Core.Shops.SubscriptionProduct do
   defp currencies_should_be_same(changeset) do
     {_, price} = fetch_field(changeset, :price)
     {_, setup_fee} = fetch_field(changeset, :setup_fee)
-    {_, shipping_fee} = fetch_field(changeset, :shipping_fee)
 
-    with true <- price.currency == setup_fee.currency,
-         true <- price.currency == shipping_fee.currency do
+    if price.currency == setup_fee.currency do
       changeset
     else
-      false ->
-        add_error(changeset, :price, "price and shipping_fee must have the same currency")
+      add_error(changeset, :price, "price and setup fee must have the same currency")
     end
   end
 
   defp set_default_setup_fee(changeset) do
     set_default_fee(changeset, :setup_fee)
-  end
-
-  defp set_default_shipping_fee(changeset) do
-    set_default_fee(changeset, :shipping_fee)
   end
 
   defp set_default_fee(changeset, column) do
