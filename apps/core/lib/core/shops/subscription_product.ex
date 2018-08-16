@@ -2,6 +2,7 @@ defmodule Core.Shops.SubscriptionProduct do
   use Core.Schema
 
   alias Core.Shops.{Shop}
+  alias Core.Orders.{DeliveryPlan}
 
   schema "subscription_products" do
     field :name, :string
@@ -10,6 +11,7 @@ defmodule Core.Shops.SubscriptionProduct do
     field :setup_fee, Money.Ecto.Composite.Type
 
     belongs_to :shop, Shop
+    has_many :delivery_plans, DeliveryPlan
 
     timestamps()
   end
