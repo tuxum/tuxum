@@ -1,4 +1,4 @@
-defmodule Core.Shops.Interval do
+defmodule Core.Orders.Interval do
   use Core.Schema
 
   schema "intervals" do

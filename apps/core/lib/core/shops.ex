@@ -11,8 +11,7 @@ defmodule Core.Shops do
     Address,
     CustomerAddress,
     OnetimeProduct,
-    SubscriptionProduct,
-    DeliveryInterval
+    SubscriptionProduct
   }
 
   alias Core.Accounts.{Owner}
@@ -163,10 +162,6 @@ defmodule Core.Shops do
     else
       error -> error
     end
-  end
-
-  def delivery_intervals do
-    DeliveryInterval |> DB.replica().all()
   end
 
   defp transform_money(attrs) do
