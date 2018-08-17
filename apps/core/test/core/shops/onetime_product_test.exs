@@ -10,15 +10,6 @@ defmodule Core.Shops.OnetimeProductTest do
       %{product: %OnetimeProduct{shop_id: 1}}
     end
 
-    test "errors when currencies don't match", %{product: product} do
-      params = @params |> Map.put(:price, Money.new(:JPY, 5000))
-
-      changeset = OnetimeProduct.insert_changeset(product, params)
-
-      assert changeset.valid? == false
-      assert changeset.errors |> Keyword.has_key?(:price)
-    end
-
     test "errors when price is negative", %{product: product} do
       params = @params |> Map.put(:price, Money.new(:USD, -500))
 
