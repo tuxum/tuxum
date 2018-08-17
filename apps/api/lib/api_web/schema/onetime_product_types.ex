@@ -10,7 +10,6 @@ defmodule APIWeb.Schema.OnetimeProductTypes do
         field :name, non_null(:string)
         field :is_public, non_null(:boolean)
         field :price, non_null(:money_with_currency)
-        field :shipping_fee, :money_with_currency
       end
 
       output do
@@ -28,7 +27,6 @@ defmodule APIWeb.Schema.OnetimeProductTypes do
         field :name, non_null(:string)
         field :is_public, non_null(:boolean)
         field :price, non_null(:money_with_currency)
-        field :shipping_fee, :money_with_currency
       end
 
       output do

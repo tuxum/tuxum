@@ -18,74 +18,64 @@ defmodule APIWeb.Schema.ShopQueryTest do
     end
 
     test "query big data", %{conn: conn} do
-      assert graphql_data(conn, """
-               query {
-                 owner {
-                   id
-                   name
-                   email
-                   shop {
-                     id
-                     name
-                     customers (first: 10) {
-                       edges {
-                         cursor
-                         node {
-                           name
-                           email
-                         }
-                       }
-                     }
-                     onetime_products (first: 10) {
-                       edges {
-                         cursor
-                         node {
-                           id
-                           shop_id
-                           name
-                           is_public
-                           price {
-                             amount
-                             currency
-                           }
-                           shipping_fee {
-                             amount
-                             currency
-                           }
-                         }
-                       }
-                     }
-                     subscription_products (first: 10) {
-                       edges {
-                         cursor
-                         node {
-                           id
-                           shop_id
-                           name
-                           is_public
-                           price {
-                             amount
-                             currency
-                           }
-                           setup_fee {
-                             amount
-                             currency
-                           }
-                           shipping_fee {
-                             amount
-                             currency
-                           }
-                           delivery_interval {
-                             name
-                             interval_days
-                           }
-                         }
-                       }
-                     }
-                   }
-                 }
-               }
-             """)
+      query = """
+        query {
+          owner {
+            id
+            name
+            email
+            shop {
+              id
+              name
+              customers (first: 10) {
+                edges {
+                  cursor
+                  node {
+                    name
+                    email
+                  }
+                }
+              }
+              onetime_products (first: 10) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    shop_id
+                    name
+                    is_public
+                    price {
+                      amount
+                      currency
+                    }
+                  }
+                }
+              }
+              subscription_products (first: 10) {
+                edges {
+                  cursor
+                  node {
+                    id
+                    shop_id
+                    name
+                    is_public
+                    price {
+                      amount
+                      currency
+                    }
+                    setup_fee {
+                      amount
+                      currency
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      """
+
+      assert graphql_data(conn, query)
     end
   end
 end

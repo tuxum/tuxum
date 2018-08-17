@@ -1,7 +1,6 @@
 defmodule Core.Shops.SubscriptionProductTest do
   use Core.DataCase, async: true
 
-  alias Core.Shops
   alias Core.Shops.SubscriptionProduct
 
   @params Core.Fixtures.subscription_product()
