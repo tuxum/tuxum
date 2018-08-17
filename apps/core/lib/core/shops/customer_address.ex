@@ -10,20 +10,26 @@ defmodule Core.Shops.CustomerAddress do
     timestamps()
   end
 
-  def changeset(customer_address, attrs \\ %{}) do
+  @impl Core.Schema
+  def insert_changeset(customer_address, attrs \\ %{}) do
     customer_address
     |> cast(attrs, [])
   end
 
+  @impl Core.Schema
+  def update_changeset(customer_address, attrs \\ %{}) do
+    insert_changeset(customer_address, attrs)
+  end
+
   def insert(customer_address, attrs) do
     customer_address
-    |> changeset(attrs)
+    |> insert_changeset(attrs)
     |> DB.primary().insert()
   end
 
   def update(customer_address, attrs) do
     customer_address
-    |> changeset(attrs)
+    |> update_changeset(attrs)
     |> DB.primary().update()
   end
 end

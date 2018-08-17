@@ -11,11 +11,13 @@ defmodule Core.Orders.DeliveryPlan do
     timestamps()
   end
 
+  @impl Core.Schema
   def insert_changeset(delivery_plan, attrs \\ %{}) do
     delivery_plan
     |> cast(attrs, [])
   end
 
+  @impl Core.Schema
   def update_changeset(delivery_plan, attrs \\ %{}) do
     insert_changeset(delivery_plan, attrs)
   end

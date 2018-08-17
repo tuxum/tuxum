@@ -16,22 +16,28 @@ defmodule Core.Shops.Shop do
     timestamps()
   end
 
-  def changeset(owner, attrs \\ %{}) do
+  @impl Core.Schema
+  def insert_changeset(owner, attrs \\ %{}) do
     owner
     |> cast(attrs, ~w[name]a)
     |> validate_required(~w[name]a)
     |> unique_constraint(:owner_id, name: :shops_owner_id_index)
   end
 
+  @impl Core.Schema
+  def update_changeset(owner, attrs \\ %{}) do
+    insert_changeset(owner, attrs)
+  end
+
   def insert(shop, attrs) do
     shop
-    |> changeset(attrs)
+    |> insert_changeset(attrs)
     |> DB.primary().insert()
   end
 
   def update(shop, attrs) do
     shop
-    |> changeset(attrs)
+    |> update_changeset(attrs)
     |> DB.primary().update()
   end
 end

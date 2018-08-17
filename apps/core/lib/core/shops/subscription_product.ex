@@ -17,6 +17,7 @@ defmodule Core.Shops.SubscriptionProduct do
     timestamps()
   end
 
+  @impl Core.Schema
   def insert_changeset(subscription_product, attrs \\ %{}) do
     subscription_product
     |> cast(attrs, ~w[name is_public price setup_fee])
@@ -28,6 +29,7 @@ defmodule Core.Shops.SubscriptionProduct do
     |> currencies_should_be_same()
   end
 
+  @impl Core.Schema
   def update_changeset(subscription_product, attrs \\ %{}) do
     subscription_product
     |> cast(attrs, ~w[name is_public price setup_fee])

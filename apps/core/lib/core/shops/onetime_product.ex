@@ -13,6 +13,7 @@ defmodule Core.Shops.OnetimeProduct do
     timestamps()
   end
 
+  @impl Core.Schema
   def insert_changeset(onetime_product, attrs \\ %{}) do
     onetime_product
     |> cast(attrs, ~w[name is_public price])
@@ -21,6 +22,7 @@ defmodule Core.Shops.OnetimeProduct do
     |> price_should_be_positive()
   end
 
+  @impl Core.Schema
   def update_changeset(onetime_product, attrs \\ %{}) do
     onetime_product
     |> cast(attrs, ~w[name is_public price])
