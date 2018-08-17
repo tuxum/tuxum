@@ -34,9 +34,9 @@ defmodule Core.Accounts do
     repo = DB.primary()
 
     repo.transaction(fn ->
-      with {:ok, owner} <- %Owner{} |> Owner.insert(%{name: name, email: email}),
+      with {:ok, owner} <- %Owner{} |> Core.insert(%{name: name, email: email}),
            identity = owner |> Ecto.build_assoc(:password_identity),
-           {:ok, password_identity} <- identity |> PasswordIdentity.insert(%{password: password}) do
+           {:ok, password_identity} <- identity |> Core.insert(%{password: password}) do
         %Owner{owner | password_identity: password_identity}
       else
         {:error, changeset} ->
