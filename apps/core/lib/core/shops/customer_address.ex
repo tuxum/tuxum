@@ -3,7 +3,7 @@ defmodule Core.Shops.CustomerAddress do
 
   alias Core.Shops.{Customer, Address}
 
-  schema "customers_addresses" do
+  schema "customer_addresses" do
     belongs_to :customer, Customer
     belongs_to :address, Address
 
