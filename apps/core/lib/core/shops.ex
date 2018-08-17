@@ -7,12 +7,8 @@ defmodule Core.Shops do
 
   alias Core.Shops.{
     Shop,
-    Customer,
     Address,
     CustomerAddress,
-    OnetimeProduct,
-    SubscriptionProduct,
-    DeliveryInterval
   }
 
   alias Core.Accounts.{Owner}
@@ -24,12 +20,12 @@ defmodule Core.Shops do
   def insert_shop(owner = %Owner{}, attrs) do
     owner
     |> build_assoc(:shop)
-    |> Shop.insert(attrs)
+    |> Core.insert(attrs)
   end
 
   def update_shop(owner = %Owner{}, attrs) do
     with {:ok, shop} <- find_shop(owner) do
-      shop |> Shop.update(attrs)
+      shop |> Core.update(attrs)
     else
       error -> error
     end
@@ -60,14 +56,14 @@ defmodule Core.Shops do
     repo.transaction(fn ->
       customer = shop |> build_assoc(:customers)
 
-      with {:ok, customer} <- Customer.insert(customer, attrs) do
+      with {:ok, customer} <- Core.insert(customer, attrs) do
         Enum.each(address_attrs, fn address ->
-          with {:ok, address} <- %Address{} |> Address.insert(address),
+          with {:ok, address} <- %Address{} |> Core.insert(address),
                customer_address = %CustomerAddress{
                  customer_id: customer.id,
                  address_id: address.id
                },
-               {:ok, _} <- CustomerAddress.insert(customer_address, %{}) do
+               {:ok, _} <- Core.insert(customer_address, %{}) do
             nil
           else
             {:error, changeset} ->
@@ -85,7 +81,7 @@ defmodule Core.Shops do
 
   def update_customer(shop = %Shop{}, customer_id, attrs) do
     with {:ok, customer} <- find_customer(shop, %{id: customer_id}),
-         {:ok, customer} <- Customer.update(customer, attrs) do
+         {:ok, customer} <- Core.update(customer, attrs) do
       {:ok, customer}
     else
       error -> error
@@ -98,7 +94,7 @@ defmodule Core.Shops do
 
   def update_address(customer, address_id, attrs) do
     with {:ok, address} <- find_address(customer, %{id: address_id}),
-         {:ok, address} <- Address.update(address, attrs) do
+         {:ok, address} <- Core.update(address, attrs) do
       {:ok, address}
     else
       error -> error
@@ -123,12 +119,12 @@ defmodule Core.Shops do
 
     shop
     |> build_assoc(:onetime_products)
-    |> OnetimeProduct.insert(attrs)
+    |> Core.insert(attrs)
   end
 
   def update_onetime_product(shop = %Shop{}, product_id, attrs) do
     with {:ok, product} <- find_onetime_product(shop, %{id: product_id}),
-         {:ok, product} <- OnetimeProduct.update(product, attrs) do
+         {:ok, product} <- Core.update(product, attrs) do
       {:ok, product}
     else
       error -> error
@@ -153,20 +149,16 @@ defmodule Core.Shops do
 
     shop
     |> build_assoc(:subscription_products)
-    |> SubscriptionProduct.insert(attrs)
+    |> Core.insert(attrs)
   end
 
   def update_subscription_product(shop = %Shop{}, product_id, attrs) do
     with {:ok, product} <- find_subscription_product(shop, %{id: product_id}),
-         {:ok, product} <- SubscriptionProduct.update(product, attrs) do
+         {:ok, product} <- Core.update(product, attrs) do
       {:ok, product}
     else
       error -> error
     end
-  end
-
-  def delivery_intervals do
-    DeliveryInterval |> DB.replica().all()
   end
 
   defp transform_money(attrs) do
@@ -184,8 +176,4 @@ defmodule Core.Shops do
   end
 
   defp do_transform_money(pair), do: pair
-
-  def find_delivery_interval(%SubscriptionProduct{delivery_interval_id: id}) do
-    DeliveryInterval |> find_by(id: id)
-  end
 end

@@ -16,7 +16,8 @@ defmodule Core.Accounts.Owner do
 
   @email_regex ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$/
 
-  def changeset(owner, attrs \\ %{}) do
+  @impl Core.Schema
+  def insert_changeset(owner, attrs \\ %{}) do
     owner
     |> cast(attrs, ~w[name email]a)
     |> downcase_email()
@@ -25,19 +26,24 @@ defmodule Core.Accounts.Owner do
     |> unique_constraint(:email, name: :owners_email_index)
   end
 
+  @impl Core.Schema
+  def update_changeset(owner, attrs \\ %{}) do
+    insert_changeset(owner, attrs)
+  end
+
   defp downcase_email(changeset) do
     update_change(changeset, :email, &String.downcase/1)
   end
 
   def insert(owner, attrs) do
     owner
-    |> changeset(attrs)
+    |> insert_changeset(attrs)
     |> DB.primary().insert()
   end
 
   def update(owner, attrs) do
     owner
-    |> changeset(attrs)
+    |> update_changeset(attrs)
     |> DB.primary().update()
   end
 end

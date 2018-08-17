@@ -11,8 +11,6 @@ defmodule APIWeb.Schema.SubscriptionProductTypes do
         field :is_public, non_null(:boolean)
         field :price, non_null(:money_with_currency)
         field :setup_fee, :money_with_currency
-        field :shipping_fee, :money_with_currency
-        field :delivery_interval_id, non_null(:id)
       end
 
       output do
@@ -31,8 +29,6 @@ defmodule APIWeb.Schema.SubscriptionProductTypes do
         field :is_public, non_null(:boolean)
         field :price, non_null(:money_with_currency)
         field :setup_fee, :money_with_currency
-        field :shipping_fee, :money_with_currency
-        field :delivery_interval_id, non_null(:id)
       end
 
       output do

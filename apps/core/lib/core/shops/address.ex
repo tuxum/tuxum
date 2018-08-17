@@ -18,6 +18,7 @@ defmodule Core.Shops.Address do
   @cast_attrs ~w[label name postal_code country district line1 line2 line3 phone]a
   @required_attrs ~w[name postal_code country district line1 phone]a
 
+  @impl Core.Schema
   def insert_changeset(customer, attrs \\ %{}) do
     customer
     |> cast(attrs, @cast_attrs)
@@ -25,6 +26,7 @@ defmodule Core.Shops.Address do
     |> validate_length(:country, is: 2)
   end
 
+  @impl Core.Schema
   def update_changeset(customer, attrs \\ %{}) do
     insert_changeset(customer, attrs)
   end

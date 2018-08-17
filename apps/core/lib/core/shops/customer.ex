@@ -14,6 +14,7 @@ defmodule Core.Shops.Customer do
     timestamps()
   end
 
+  @impl Core.Schema
   def insert_changeset(customer, attrs \\ %{}) do
     customer
     |> cast(attrs, ~w[name email]a)
@@ -22,6 +23,7 @@ defmodule Core.Shops.Customer do
     |> unique_constraint(:email, name: :customers_shop_id_email_index)
   end
 
+  @impl Core.Schema
   def update_changeset(customer, attrs \\ %{}) do
     insert_changeset(customer, attrs)
   end

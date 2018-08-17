@@ -12,12 +12,18 @@ defmodule Core.Accounts.PasswordIdentity do
     timestamps()
   end
 
-  def changeset(password_identity, attrs \\ %{}) do
+  @impl Core.Schema
+  def insert_changeset(password_identity, attrs \\ %{}) do
     password_identity
     |> cast(attrs, ~w[digest password]a)
     |> validate_length(:password, min: 10)
     |> hash_password()
     |> validate_required(~w[digest]a)
+  end
+
+  @impl Core.Schema
+  def update_changeset(password_identity, attrs \\ %{}) do
+    insert_changeset(password_identity, attrs)
   end
 
   defp hash_password(changeset) do
@@ -32,13 +38,13 @@ defmodule Core.Accounts.PasswordIdentity do
 
   def insert(identity, attrs) do
     identity
-    |> changeset(attrs)
+    |> insert_changeset(attrs)
     |> DB.primary().insert()
   end
 
   def update(identity, attrs) do
     identity
-    |> changeset(attrs)
+    |> update_changeset(attrs)
     |> DB.primary().update()
   end
 end
