@@ -40,6 +40,13 @@ if Mix.env() == :test do
       |> merge(attrs)
     end
 
+    def onetime_order(attrs \\ %{}) do
+      %{
+        price: %{currency: "USD", amount: "50"}
+      }
+      |> merge(attrs)
+    end
+
     def customer(attrs \\ %{}) do
       %{
         name: Faker.Name.name(),
