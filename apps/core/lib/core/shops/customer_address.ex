@@ -1,7 +1,8 @@
 defmodule Core.Shops.CustomerAddress do
   use Core.Schema
 
-  alias Core.Shops.{Customer, Address}
+  alias Core.Shops.Customer
+  alias Core.Orders.Address
 
   schema "customer_addresses" do
     belongs_to :customer, Customer

@@ -5,13 +5,9 @@ defmodule Core.Shops do
 
   use Core
 
-  alias Core.Shops.{
-    Shop,
-    Address,
-    CustomerAddress,
-  }
-
-  alias Core.Accounts.{Owner}
+  alias Core.Shops.{Shop, CustomerAddress}
+  alias Core.Orders.Address
+  alias Core.Accounts.Owner
 
   def find_shop(%Owner{id: id}) do
     Shop |> find_by(owner_id: id)

@@ -1,4 +1,4 @@
-defmodule Core.Shops.Address do
+defmodule Core.Orders.Address do
   use Core.Schema
 
   schema "addresses" do
