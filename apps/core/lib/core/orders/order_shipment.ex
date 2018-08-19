@@ -1,6 +1,8 @@
 defmodule Core.Orders.OrderShipment do
   use Core.Schema
 
+  alias Core.Orders.OnetimeOrderShipment
+
   schema "order_shipments" do
     has_one :onetime_order_shipment, OnetimeOrderShipment
     has_one :onetime_order, through: [:onetime_order_shipment, :onetime_order]
