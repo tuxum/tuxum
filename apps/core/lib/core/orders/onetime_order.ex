@@ -1,7 +1,8 @@
 defmodule Core.Orders.OnetimeOrder do
   use Core.Schema
 
-  alias Core.Shops.{OnetimeProduct, Customer, OnetimeOrderInvoice, OnetimeOrderShipment}
+  alias Core.Orders.{OnetimeOrderInvoice, OnetimeOrderShipment}
+  alias Core.Shops.{OnetimeProduct, Customer}
 
   schema "onetime_orders" do
     field :price, Money.Ecto.Composite.Type
